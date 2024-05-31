@@ -8,7 +8,9 @@ const authRouter = require('./routers/authrouter')
 const empRouter = require('./routers/employeerouter')
 
 const port = process.env.PORT || 8000;
-const MONGO_URL=`mongodb+srv://aslamaks:65gb5BaIq8K8rSZC@petrobytescluster.avn0nwi.mongodb.net/?retryWrites=true&w=majority&appName=PetrobytesCluster`
+const MONGO_URL=`mongodb+srv://petro-main-db-06f20494b77:HNz3517CNn3pYv751y2714ASRfqVdw@prod-us-central1-1.lfuy1.mongodb.net/petro-main-db-06f20494b77`
+//mongodb+srv://aslamaks:65gb5BaIq8K8rSZC@petrobytescluster.avn0nwi.mongodb.net/?retryWrites=true&w=majority&appName=PetrobytesCluster
+
 const app = express();
 app.use(cors());
 app.use(express.json())

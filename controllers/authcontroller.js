@@ -4,8 +4,7 @@ const Signup = async (req, res) => {
   let userData = req.body;
   try {
     let email = userData.email;
-    let existingUser = null
-    // await User.findOne({ email });
+    let existingUser = await User.findOne({ email });
 
     if (existingUser) {
       res.status(200).json({message:"User Alredy Registerd..!"});
