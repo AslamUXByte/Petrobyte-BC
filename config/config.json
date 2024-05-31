@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "ADMIN@123",
+    "database": "FUELPUMBPORTAL",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "ADMIN@123",
+    "database": "FUELPUMBPORTAL",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postgres",
+    "password": "ADMIN@123",
+    "database": "FUELPUMBPORTAL",
+    "host": "localhost",
+    "dialect": "postgres"
+  }
+}
