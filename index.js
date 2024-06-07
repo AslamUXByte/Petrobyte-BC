@@ -1,19 +1,22 @@
-const express = require('express');
-const db = require('./models');
+const express = require("express");
+// const db = require('./models');
 const mongoose = require("mongoose");
-const cors = require('cors');
+const cors = require("cors");
 
-const userRouter = require('./routers/userrouter')
-const authRouter = require('./routers/authrouter')
-const empRouter = require('./routers/employeerouter')
+const userRouter = require("./routers/userrouter");
+const authRouter = require("./routers/authrouter");
+const empRouter = require("./routers/employeerouter");
+const fuelAccRouter = require("./routers/fuelaccountrouter");
+const productAccRouter = require("./routers/productaccountrouter");
+const productRouter = require("./routers/productrouter");
 
 const port = process.env.PORT || 8000;
-const MONGO_URL=`mongodb+srv://petro-main-db-06f20494b77:HNz3517CNn3pYv751y2714ASRfqVdw@prod-us-central1-1.lfuy1.mongodb.net/petro-main-db-06f20494b77`
-//mongodb+srv://aslamaks:65gb5BaIq8K8rSZC@petrobytescluster.avn0nwi.mongodb.net/?retryWrites=true&w=majority&appName=PetrobytesCluster
+// const MONGO_URL=`mongodb+srv://petro-main-db-06f20494b77:HNz3517CNn3pYv751y2714ASRfqVdw@prod-us-central1-1.lfuy1.mongodb.net/petro-main-db-06f20494b77`
+const MONGO_URL = `mongodb+srv://aslamaks:65gb5BaIq8K8rSZC@petrobytescluster.avn0nwi.mongodb.net/?retryWrites=true&w=majority&appName=PetrobytesCluster`;
 
 const app = express();
 app.use(cors());
-app.use(express.json())
+app.use(express.json());
 
 //MongoDB
 mongoose
@@ -21,9 +24,12 @@ mongoose
   .then(() => console.log("MongoDB is  connected successfully"))
   .catch((err) => console.error(err));
 
-app.use('/user',userRouter)
-app.use('/auth',authRouter)
-app.use('/employee',empRouter)
+app.use("/user", userRouter);
+app.use("/auth", authRouter);
+app.use("/employee", empRouter);
+app.use("/fuelAccounts", fuelAccRouter);
+app.use("/productAccounts", productAccRouter);
+app.use("/product", productRouter);
 
 // Sync Database PSQL
 // db.sequelize.sync()
