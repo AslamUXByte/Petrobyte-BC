@@ -56,6 +56,14 @@ let deleteFuelAccountDetails = async (req, res) => {
   }
 };
 
+const getFuelAccountOverview = async (req,res)=>{
+  try {
+    
+  } catch (error) {
+    
+  }
+}
+
 module.exports = {
   getFuelAccountDetails,
   getFuelAccountDetailsById,

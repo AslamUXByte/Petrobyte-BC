@@ -9,6 +9,7 @@ const empRouter = require("./routers/employeerouter");
 const fuelAccRouter = require("./routers/fuelaccountrouter");
 const productAccRouter = require("./routers/productaccountrouter");
 const productRouter = require("./routers/productrouter");
+const fuelPriceRouter = require("./routers/fuelpricerouter");
 
 const port = process.env.PORT || 8000;
 // const MONGO_URL=`mongodb+srv://petro-main-db-06f20494b77:HNz3517CNn3pYv751y2714ASRfqVdw@prod-us-central1-1.lfuy1.mongodb.net/petro-main-db-06f20494b77`
@@ -18,7 +19,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-//MongoDB
+// MongoDB
 mongoose
   .connect(MONGO_URL)
   .then(() => console.log("MongoDB is  connected successfully"))
@@ -30,8 +31,9 @@ app.use("/employee", empRouter);
 app.use("/fuelAccounts", fuelAccRouter);
 app.use("/productAccounts", productAccRouter);
 app.use("/product", productRouter);
+app.use("/fuelPrice", fuelPriceRouter);
 
-// Sync Database PSQL
+// PSQL
 // db.sequelize.sync()
 //   .then(() => {
 //     console.log('Database connected and synchronized');

@@ -35,7 +35,7 @@ let putProductAccountDetails = async (req, res) => {
   let productDetails = req.body;
   try {
     const putData = await ProductAccount.findOneAndUpdate(
-      { id: productDetails.id },
+      { _id: productDetails.id },
       productDetails,
       { new: true }
     );
@@ -49,7 +49,7 @@ let deleteProductAccountDetails = async (req, res) => {
   let id = req.query.id;
 
   try {
-    const deleteData = await ProductAccount.findOneAndDelete({ id: id });
+    const deleteData = await ProductAccount.findOneAndDelete({ _id: id });
     res.status(200).json({ message: "Removed" });
   } catch (error) {
     res.json(error);

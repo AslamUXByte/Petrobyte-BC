@@ -3,7 +3,8 @@ const Employee = require("../models/employee");
 let getEmployee = async (req, res) => {
   try {
     let employee = await Employee.find();
-    res.status(200).json({ message: employee });
+    let count = await Employee.countDocuments({});
+    res.status(200).json({ message: {count,employee} });
   } catch (error) {
     res.json(error);
   }
