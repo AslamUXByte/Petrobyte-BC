@@ -9,7 +9,7 @@ let getFuelAccountDetails = async (req, res) => {
   }
 };
 
-let getFuelAccountDetailsById = async (req, res) => {
+let getFuelAccountDetailsByDate = async (req, res) => {
   let date = req.query.date;
   try {
     let fuelDetails = await FuelAccount.find({ date: date }).populate("emp_id");
@@ -56,18 +56,74 @@ let deleteFuelAccountDetails = async (req, res) => {
   }
 };
 
-const getFuelAccountOverview = async (req,res)=>{
+const getFuelAccountOverview = async (req, res) => {
   try {
-    
-  } catch (error) {
-    
-  }
-}
+    let fuelDetails = await FuelAccount.find();
+
+    const dateWiseGroupedData = fuelDetails.reduce((acc, curr) => {
+      let group = acc.find((g) => g[0].date === curr.date);
+      if (group) {
+        group.push(curr);
+      } else {
+        acc.push([curr]);
+      }
+
+      return acc;
+    }, []);
+
+    const dateAndDispencerWiseGroupedData = dateWiseGroupedData.map((item) =>
+      item.reduce((acc, curr) => {
+        let group = acc.find((g) => g[0].dispencer === curr.dispencer);
+        if (group) {
+          group.push(curr);
+        } else {
+          acc.push([curr]);
+        }
+
+        return acc;
+      }, [])
+    );
+
+    let fuelAccountOverview = [];
+
+    dateAndDispencerWiseGroupedData.map((dateWiseData) => {
+
+      dateWiseData.map((dispencerWiseDatas) => {
+        let petrolTotalAmount = 0;
+        let deiselTotalAmount = 0;
+        let date = null;
+        let dispencer = null;
+        dispencerWiseDatas.map((dispencerWiseData) => {
+          if (dispencerWiseData.fueltype == "Petrol") {
+            petrolTotalAmount = petrolTotalAmount + dispencerWiseData.amount;
+          }
+          if (dispencerWiseData.fueltype == "Deisel") {
+            deiselTotalAmount = deiselTotalAmount + dispencerWiseData.amount;
+          }
+          date = dispencerWiseData.date;
+          dispencer = dispencerWiseData.dispencer;
+        });
+        let dataToSend = {
+          date: date,
+          dispencer: dispencer,
+          petrolSaleAmount: petrolTotalAmount,
+          deiselSaleAmount: deiselTotalAmount,
+          netAmount: petrolTotalAmount + deiselTotalAmount,
+        };
+        fuelAccountOverview.push(dataToSend);
+
+      });
+    });
+
+    res.status(200).json(fuelAccountOverview);
+  } catch (error) {}
+};
 
 module.exports = {
   getFuelAccountDetails,
-  getFuelAccountDetailsById,
+  getFuelAccountDetailsByDate,
   postFuelAccountDetails,
   putFuelAccountDetails,
   deleteFuelAccountDetails,
+  getFuelAccountOverview,
 };

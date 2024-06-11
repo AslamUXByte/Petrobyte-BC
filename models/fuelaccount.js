@@ -25,6 +25,9 @@ const fuelAccSchema = new mongoose.Schema({
   fuel_end_reading: {
     type: Number,
   },
+  fuel_qty: {
+    type: Number,
+  },
   amount: {
     type: Number,
   },

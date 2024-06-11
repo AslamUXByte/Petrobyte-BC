@@ -1,9 +1,10 @@
 const express = require("express");
-const { getFuelAccountDetails, getFuelAccountDetailsById,postFuelAccountDetails, putFuelAccountDetails, deleteFuelAccountDetails } = require("../controllers/fuelaccountcontroller");
+const { getFuelAccountDetails, getFuelAccountDetailsByDate,postFuelAccountDetails, putFuelAccountDetails, deleteFuelAccountDetails,getFuelAccountOverview } = require("../controllers/fuelaccountcontroller");
 const router = express.Router();
 
 router.get("/", getFuelAccountDetails);
-router.get("/byId", getFuelAccountDetailsById);
+router.get("/overview", getFuelAccountOverview);
+router.get("/bydate", getFuelAccountDetailsByDate);
 router.post("/", postFuelAccountDetails);
 router.put("/", putFuelAccountDetails);
 router.delete("/", deleteFuelAccountDetails);

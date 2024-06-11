@@ -9,7 +9,7 @@ let getProductAccountDetails = async (req, res) => {
   }
 };
 
-let getProductAccountDetailsById = async (req, res) => {
+let getProductAccountDetailsByDate = async (req, res) => {
   let date = req.query.date;
   try {
     let productAccountDetails = await ProductAccount.find({ date: date }).populate('product_id');
@@ -58,7 +58,7 @@ let deleteProductAccountDetails = async (req, res) => {
 
 module.exports = {
   getProductAccountDetails,
-  getProductAccountDetailsById,
+  getProductAccountDetailsByDate,
   postProductAccountDetails,
   putProductAccountDetails,
   deleteProductAccountDetails,
