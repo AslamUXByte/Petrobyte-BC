@@ -2,15 +2,34 @@ const Employee = require("../models/employee");
 
 let getEmployee = async (req, res) => {
   try {
-    
-    let employee = await Employee.find();
-    console.log(employee)
+    // Get the page and limit from query parameters, set default values if not provided
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    // Calculate the starting index of the results for the current page
+    const startIndex = (page - 1) * limit;
+
+    // Fetch the employees with pagination
+    let employees = await Employee.find()
+      .skip(startIndex)
+      .limit(limit);
+
+    // Get the total count of employees
     let count = await Employee.countDocuments({});
-    res.status(200).json({ message: {count,employee} });
+
+    res.status(200).json({ 
+      message: {
+        count,
+        employees,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit)
+      }
+    });
   } catch (error) {
-    res.json(error);
+    res.status(500).json({ error: error.message });
   }
 };
+
 
 let getEmployeeById = async (req, res) => {
   let email = req.query.email;
