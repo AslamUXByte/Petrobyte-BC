@@ -6,7 +6,6 @@ const empSchema = new mongoose.Schema({
   },
   emp_email: {
     type: String,
-    unique: true,
   },
   emp_contact_no: {
     type: String,
