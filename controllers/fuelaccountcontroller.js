@@ -11,8 +11,9 @@ let getFuelAccountDetails = async (req, res) => {
 
 let getFuelAccountDetailsByDate = async (req, res) => {
   let date = req.query.date;
+  let dispencer =req.query.dispencer
   try {
-    let fuelDetails = await FuelAccount.find({ date: date }).populate("emp_id");
+    let fuelDetails = await FuelAccount.find({ date: date, dispencer:dispencer }).populate("emp_id");
     res.status(200).json({ message: fuelDetails });
   } catch (error) {
     res.json(error);
@@ -125,5 +126,5 @@ module.exports = {
   postFuelAccountDetails,
   putFuelAccountDetails,
   deleteFuelAccountDetails,
-  getFuelAccountOverview,
+  getFuelAccountOverview
 };

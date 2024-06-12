@@ -2,7 +2,9 @@ const Employee = require("../models/employee");
 
 let getEmployee = async (req, res) => {
   try {
+    
     let employee = await Employee.find();
+    console.log(employee)
     let count = await Employee.countDocuments({});
     res.status(200).json({ message: {count,employee} });
   } catch (error) {
@@ -41,13 +43,13 @@ let postEmployee = async (req, res) => {
 let putEmployee = async (req, res) => {
   let empData = req.body;
   try {
-    let email = empData.emp_email;
-    let employee = await Employee.find({ emp_email:email });
+    let id = empData.id;
+    let employee = await Employee.find({ _id:id });
 
     if (!employee) {
       res.status(200).json({ message: "No Staff Found" });
     }else{
-      const result = await Employee.findOneAndUpdate({ emp_email: empData.email }, empData, { new: true });
+      const result = await Employee.findOneAndUpdate({ _id: id }, empData, { new: true });
       res.status(200).json({ message: "Staff Details Updated" });
     }
   } catch (error) {
@@ -56,15 +58,15 @@ let putEmployee = async (req, res) => {
 };
 
 let deleteEmployee = async (req, res) => {
-  let email = req.query.email;
+  let id = req.query.id;
 
   try {
-    let employee = await Employee.find({ emp_email:email });
+    let employee = await Employee.find({ _id:id });
 
     if (!employee) {
       res.status(200).json({ message: "No Staff Found" });
     }else{
-      const result = await Employee.findOneAndDelete({ emp_email: email });
+      const result = await Employee.findOneAndDelete({ _id: id });
       res.status(200).json({ message: "Staff Removed" });
     }
   } catch (error) {
