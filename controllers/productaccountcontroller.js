@@ -2,8 +2,25 @@ const ProductAccount = require("../models/productaccount");
 
 let getProductAccountDetails = async (req, res) => {
   try {
-    let productAccountDetails = await ProductAccount.find().populate('product_id');
-    res.status(200).json({ message: productAccountDetails });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 15;
+
+    const startIndex = (page - 1) * limit;
+
+    let fuelDetails = await FuelAccount.find()
+      .populate("emp_id")
+      .skip(startIndex)
+      .limit(limit);
+    let count = await FuelAccount.countDocuments({});
+
+    res.status(200).json({
+      message: {
+        count,
+        fuelDetails,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+      },
+    });
   } catch (error) {
     res.json(error);
   }

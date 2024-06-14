@@ -2,8 +2,25 @@ const FuelAccount = require("../models/fuelaccount");
 
 let getFuelAccountDetails = async (req, res) => {
   try {
-    let fuelDetails = await FuelAccount.find().populate("emp_id");
-    res.status(200).json({ message: fuelDetails });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 15;
+
+    const startIndex = (page - 1) * limit;
+
+    let fuelDetails = await FuelAccount.find()
+      .populate("emp_id")
+      .skip(startIndex)
+      .limit(limit);
+    let count = await FuelAccount.countDocuments({});
+
+    res.status(200).json({
+      message: {
+        count,
+        fuelDetails,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+      },
+    });
   } catch (error) {
     res.json(error);
   }
@@ -11,9 +28,12 @@ let getFuelAccountDetails = async (req, res) => {
 
 let getFuelAccountDetailsByDate = async (req, res) => {
   let date = req.query.date;
-  let dispencer =req.query.dispencer
+  let dispencer = req.query.dispencer;
   try {
-    let fuelDetails = await FuelAccount.find({ date: date, dispencer:dispencer }).populate("emp_id");
+    let fuelDetails = await FuelAccount.find({
+      date: date,
+      dispencer: dispencer,
+    }).populate("emp_id");
     res.status(200).json({ message: fuelDetails });
   } catch (error) {
     res.json(error);
@@ -88,7 +108,6 @@ const getFuelAccountOverview = async (req, res) => {
     let fuelAccountOverview = [];
 
     dateAndDispencerWiseGroupedData.map((dateWiseData) => {
-
       dateWiseData.map((dispencerWiseDatas) => {
         let petrolTotalAmount = 0;
         let deiselTotalAmount = 0;
@@ -112,7 +131,6 @@ const getFuelAccountOverview = async (req, res) => {
           netAmount: petrolTotalAmount + deiselTotalAmount,
         };
         fuelAccountOverview.push(dataToSend);
-
       });
     });
 
@@ -126,5 +144,5 @@ module.exports = {
   postFuelAccountDetails,
   putFuelAccountDetails,
   deleteFuelAccountDetails,
-  getFuelAccountOverview
+  getFuelAccountOverview,
 };

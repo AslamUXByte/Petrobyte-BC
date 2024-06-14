@@ -6,10 +6,10 @@ const { getProductAccountDetails,
     deleteProductAccountDetails, } = require("../controllers/productaccountcontroller");
 const router = express.Router();
 
-router.get("/", getProductAccountDetails);
-router.get("/bydate", getProductAccountDetailsByDate);
-router.post("/", postProductAccountDetails);
-router.put("/", putProductAccountDetails);
-router.delete("/", deleteProductAccountDetails);
+router.get("/GETAllProductAccount", getProductAccountDetails);
+router.get("/GETProductAccountbydate", getProductAccountDetailsByDate);
+router.post("/POSTProductAccount", postProductAccountDetails);
+router.put("/PUTProductAccount", putProductAccountDetails);
+router.delete("/DELETEProductAccount", deleteProductAccountDetails);
 
 module.exports = router;
