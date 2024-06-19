@@ -37,30 +37,24 @@ let getCCById = async (req, res) => {
 let postCC = async (req, res) => {
   try {
     let empData = req.body;
-    let email = empData.emp_email;
-    let CC = await CreditCustomer.findOne({ emp_email: email });
 
-    if (CC) {
-      res.status(200).json({ message: "Credit Customer Alredy Registerd" });
-    } else {
-      let insertCC = await CreditCustomer.create(empData);
-      res.status(200).json({ message: "Staff Registerd Successfully" });
-    }
+    let insertCC = await CreditCustomer.create(empData);
+    res.status(200).json({ message: "Staff Registerd Successfully" });
   } catch (error) {
     res.json(error);
   }
 };
 
 let putCC = async (req, res) => {
-  let empData = req.body;
   try {
+    let empData = req.body;
     let id = empData.id;
-    let CC = await CreditCustomer.find({ _id: id });
+    let CC = CreditCustomer.find({ _id: id });
 
     if (!CC) {
       res.status(200).json({ message: "No CC Found" });
     } else {
-      const putCC = await CreditCustomer.findOneAndUpdate(
+      const putCC = CreditCustomer.findOneAndUpdate(
         { _id: id },
         empData,
         {

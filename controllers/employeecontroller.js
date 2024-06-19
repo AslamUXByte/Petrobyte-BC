@@ -56,12 +56,12 @@ let putEmployee = async (req, res) => {
   let empData = req.body;
   try {
     let id = empData.id;
-    let employee = await Employee.find({ _id: id });
+    let employee = Employee.find({ _id: id });
 
     if (!employee) {
       res.status(200).json({ message: "No Staff Found" });
     } else {
-      const result = await Employee.findOneAndUpdate({ _id: id }, empData, {
+      const result = Employee.findOneAndUpdate({ _id: id }, empData, {
         new: true,
       });
       res.status(200).json({ message: "Staff Details Updated" });

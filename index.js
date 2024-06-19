@@ -11,6 +11,7 @@ const productAccRouter = require("./routers/productaccountrouter");
 const productRouter = require("./routers/productrouter");
 const fuelPriceRouter = require("./routers/fuelpricerouter");
 const creditCustomerRouter = require("./routers/creditcustomerrouter");
+const creditHistoryRouter = require("./routers/credithostoryrouter");
 const dispencerRouter = require("./routers/dispencerrouter");
 
 const port = process.env.PORT || 8000;
@@ -35,6 +36,7 @@ app.use("/productAccounts", productAccRouter);
 app.use("/product", productRouter);
 app.use("/fuelPrice", fuelPriceRouter);
 app.use("/creditcustomer", creditCustomerRouter);
+app.use("/creditHistory", creditHistoryRouter);
 app.use("/dispencer", dispencerRouter);
 
 // PSQL

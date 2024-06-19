@@ -11,7 +11,7 @@ const ccSchema = new mongoose.Schema({
     type: String,
   },
   cc_email: {
-    type: Number,
+    type: String,
   },
   credit_amount: {
     type: Number,

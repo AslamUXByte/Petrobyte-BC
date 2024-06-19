@@ -11,13 +11,16 @@ const ccSchema = new mongoose.Schema({
     type: String,
   },
   fuel_type: {
-    type: Number,
+    type: String,
   },
-  amount_type: {
-    type: Number,
+  fuel_quantity: {
+    type: String,
   },
   amount: {
-    type: String,
+    type: Number,
+  },
+  emp_id:{
+    type: mongoose.Schema.Types.ObjectId,ref:'Employee',
   },
   status: {
     type: String,

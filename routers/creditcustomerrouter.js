@@ -8,8 +8,8 @@ const router = express.Router();
 
 router.get("/GETAllCC", getCC);
 router.get("/GETCCbyId", getCCById);
-router.post("/POSTAllCC", postCC);
-router.put("/PUTAllCC", putCC);
-router.delete("/DELETEAllCC", deleteCC);
+router.post("/POSTCC", postCC);
+router.put("/PUTCC", putCC);
+router.delete("/DELETECC", deleteCC);
 
 module.exports = router;
