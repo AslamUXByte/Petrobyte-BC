@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const ccSchema = new mongoose.Schema({
+const ccHistorySchema = new mongoose.Schema({
   date: {
     type: String,
   },
@@ -28,4 +28,4 @@ const ccSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model("CreditHistory", ccSchema);
+module.exports = mongoose.model("CreditHistory", ccHistorySchema);

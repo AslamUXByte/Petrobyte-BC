@@ -5,12 +5,11 @@ let getCreditHistory = async (req, res) => {
     const ccId=req.query.id;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-
     const startIndex = (page - 1) * limit;
 
-    let CreditHistorys = CreditHistory.find().skip(startIndex).limit(limit).populate("cc_id").populate("emp_id");
+    let CreditHistorys =await CreditHistory.find({cc_id:ccId}).skip(startIndex).limit(limit).populate("cc_id").populate("emp_id")
 
-    let count = CreditHistory.countDocuments({});
+    let count =await CreditHistory.countDocuments({});
 
     res.status(200).json({
       message: {
