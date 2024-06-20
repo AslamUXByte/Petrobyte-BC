@@ -7,7 +7,7 @@ let getCreditHistory = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const startIndex = (page - 1) * limit;
 
-    let CreditHistorys =await CreditHistory.find({cc_id:ccId}).skip(startIndex).limit(limit).populate("cc_id").populate("emp_id")
+    let CreditHistorys =await CreditHistory.find({cc_id:ccId}).skip(startIndex).limit(limit).populate("cc_id").populate("emp_id").populate("fuel_type")
 
     let count =await CreditHistory.countDocuments({});
 
