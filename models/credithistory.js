@@ -19,6 +19,9 @@ const ccHistorySchema = new mongoose.Schema({
   amount: {
     type: Number,
   },
+  amount_type: {
+    type: String,
+  },
   emp_id:{
     type: mongoose.Schema.Types.ObjectId,ref:'Employee',
   },
