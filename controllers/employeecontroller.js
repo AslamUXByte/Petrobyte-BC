@@ -7,7 +7,14 @@ let getEmployee = async (req, res) => {
 
     const startIndex = (page - 1) * limit;
 
-    let employees = await Employee.find().skip(startIndex).limit(limit);
+    let emp_name=req.query.name
+    let query = {};
+
+    if (emp_name) {
+      query.emp_name = { $regex: emp_name, $options: 'i' };
+    }
+
+    let employees = await Employee.find(query).skip(startIndex).limit(limit);
 
     let count = await Employee.countDocuments({});
 

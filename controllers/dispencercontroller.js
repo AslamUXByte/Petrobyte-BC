@@ -2,11 +2,22 @@ const Dispencer = require("../models/dispencer");
 
 let getDispencer = async (req, res) => {
   try {
-    let dispencers = await Dispencer.find().populate('fuel_id');
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const startIndex = (page - 1) * limit;
+
+    let dispencers = await Dispencer.find().populate('fuel_id').skip(startIndex).limit(limit);
+
+    let count = await Dispencer.countDocuments({});
+
 
     res.status(200).json({
       message: {
+        count,
         dispencers,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
       },
     });
   } catch (error) {
