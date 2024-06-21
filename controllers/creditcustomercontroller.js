@@ -47,8 +47,8 @@ let postCC = async (req, res) => {
 
 let putCC = async (req, res) => {
   try {
-    let empData = req.body;
-    let id = empData.id;
+    let ccData = req.body;
+    let id = ccData.id;
     let CC = CreditCustomer.find({ _id: id });
 
     if (!CC) {
@@ -56,7 +56,7 @@ let putCC = async (req, res) => {
     } else {
       const putCC = CreditCustomer.findOneAndUpdate(
         { _id: id },
-        empData,
+        ccData,
         {
           new: true,
         }
@@ -85,10 +85,30 @@ let deleteCC = async (req, res) => {
   }
 };
 
+const updateCreditAmount =(req,res)=>{
+  try {
+    let ccData = req.body;
+    console.log(ccData)
+    
+      const putCC = CreditCustomer.findByIdAndUpdate(
+        { _id: ccData.id },
+        {credit_amount:ccData.credit_amount},
+        {
+          new: true, runValidators: true
+        }
+      );
+      res.status(200).json({ message: "CC Details Updated" });
+    
+  } catch (error) {
+    res.json(error);
+  }
+}
+
 module.exports = {
   getCC,
   getCCById,
   postCC,
   putCC,
   deleteCC,
+  updateCreditAmount
 };

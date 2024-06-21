@@ -13,6 +13,7 @@ const fuelPriceRouter = require("./routers/fuelpricerouter");
 const creditCustomerRouter = require("./routers/creditcustomerrouter");
 const creditHistoryRouter = require("./routers/credithostoryrouter");
 const dispencerRouter = require("./routers/dispencerrouter");
+const testRouter = require("./routers/testrouter");
 
 const port = process.env.PORT || 8000;
 // const MONGO_URL=`mongodb+srv://petro-main-db-06f20494b77:HNz3517CNn3pYv751y2714ASRfqVdw@prod-us-central1-1.lfuy1.mongodb.net/petro-main-db-06f20494b77`
@@ -38,6 +39,7 @@ app.use("/fuelPrice", fuelPriceRouter);
 app.use("/creditcustomer", creditCustomerRouter);
 app.use("/creditHistory", creditHistoryRouter);
 app.use("/dispencer", dispencerRouter);
+app.use("/test", testRouter);
 
 // PSQL
 // db.sequelize.sync()
