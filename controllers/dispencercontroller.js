@@ -7,7 +7,8 @@ let getDispencer = async (req, res) => {
 
     const startIndex = (page - 1) * limit;
 
-    let dispencers = await Dispencer.find().populate('fuel_id').skip(startIndex).limit(limit);
+    let dispencers = await Dispencer.find().populate('fuel_id')
+    // .skip(startIndex).limit(limit);
 
     let count = await Dispencer.countDocuments({});
 
@@ -36,9 +37,12 @@ let getDispencerById = async (req, res) => {
 };
 
 let postDispencer = async (req, res) => {
-  let dispencerData = req.body;
   try {
-    let insertDispencer = await Dispencer.create(dispencerData);
+    let dispencerData = req.body;
+    for(let dispencer of dispencerData){
+
+      let insertDispencer = await Dispencer.create(dispencer);
+    }
     res.status(200).json({ message: "Dispencer Added Successfully" });
   } catch (error) {
     res.json(error);

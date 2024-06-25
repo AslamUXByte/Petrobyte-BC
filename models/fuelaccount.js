@@ -40,6 +40,12 @@ const fuelAccSchema = new mongoose.Schema({
   cash_hpcard: {
     type: Number,
   },
+  fuel_price_selected: {
+    type: Number,
+  },
+  status: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("FuelAccount", fuelAccSchema);

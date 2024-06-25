@@ -4,6 +4,9 @@ const ccSchema = new mongoose.Schema({
   dispencer: {
     type: String,
   },
+  sub_dispencer: {
+    type: String,
+  },
   fuel_id: {
     type: mongoose.Schema.Types.ObjectId,ref:'Fuels',
   },
