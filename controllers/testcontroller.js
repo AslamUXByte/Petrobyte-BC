@@ -13,11 +13,11 @@ let getTest = async (req, res) => {
     //   query.product_name = { $regex: product_name, $options: 'i' };
     // }
 
-    let Test = await Test.find().skip(startIndex).limit(limit);
+    let test = await Test.find().skip(startIndex).limit(limit);
     let count =await Test.countDocuments({});
     res.status(200).json({ message: {
       count,
-      Test,
+      test,
       currentPage: page,
       totalPages: Math.ceil(count / limit),
     }, });
@@ -40,7 +40,7 @@ let postTest = async (req, res) => {
   let testData = req.body;
   try {
     let saveData = await Test.create(testData);
-    res.status(200).json({ message: "Test Values Added Successfully" });
+    res.status(200).json({ message: saveData });
   } catch (error) {
     res.json(error);
   }

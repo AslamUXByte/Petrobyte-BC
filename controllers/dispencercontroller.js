@@ -67,10 +67,14 @@ let getDispencer = async (req, res) => {
 };
 
 let getDispencerById = async (req, res) => {
-  let id = req.query.id;
   try {
-    let dispencer = await Dispencer.findOne({ _id: id });
-    res.status(200).json({ message: dispencer });
+    let dispencers = await Dispencer.find().populate({
+      path: "sub_dispencer_id",
+      populate: {
+        path: "fuel_id",
+      },
+    });
+    res.status(200).json({ message: dispencers });
   } catch (error) {
     res.json(error);
   }
