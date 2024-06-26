@@ -7,16 +7,56 @@ let getDispencer = async (req, res) => {
 
     const startIndex = (page - 1) * limit;
 
-    let dispencers = await Dispencer.find().populate('fuel_id')
+    let dispencers = await Dispencer.find().populate({
+      path: "sub_dispencer_id",
+      populate: {
+        path: "fuel_id",
+      },
+    });
     // .skip(startIndex).limit(limit);
 
-    let count = await Dispencer.countDocuments({});
+    const mergeData = (data) => {
+      const result = [];
 
+      // Flatten the data array
+      const flatData = data.flat();
+
+      // Group by dispencer_name
+      const grouped = flatData.reduce((acc, item) => {
+        if (!acc[item.dispencer_name]) {
+          acc[item.dispencer_name] = {
+            _id: item._id,
+            dispencer_name: item.dispencer_name,
+            sub_dispencer_id: [],
+          };
+        }
+        acc[item.dispencer_name].sub_dispencer_id.push({
+          _id: item.sub_dispencer_id._id,
+          sub_dispencer: item.sub_dispencer_id.sub_dispencer,
+          fuel_id: item.sub_dispencer_id.fuel_id,
+          live_reading: item.live_reading,
+        });
+        return acc;
+      }, {});
+
+      // Convert grouped object back to array
+      for (const key in grouped) {
+        if (grouped.hasOwnProperty(key)) {
+          result.push(grouped[key]);
+        }
+      }
+
+      return result;
+    };
+
+    const allDispencers = mergeData(dispencers);
+
+    let count = await Dispencer.countDocuments({});
 
     res.status(200).json({
       message: {
         count,
-        dispencers,
+        allDispencers,
         currentPage: page,
         totalPages: Math.ceil(count / limit),
       },
@@ -39,8 +79,7 @@ let getDispencerById = async (req, res) => {
 let postDispencer = async (req, res) => {
   try {
     let dispencerData = req.body;
-    for(let dispencer of dispencerData){
-
+    for (let dispencer of dispencerData) {
       let insertDispencer = await Dispencer.create(dispencer);
     }
     res.status(200).json({ message: "Dispencer Added Successfully" });
@@ -88,7 +127,7 @@ let deleteDispencer = async (req, res) => {
   }
 };
 
-let updateLiveReading = async (req,res) => {
+let updateLiveReading = async (req, res) => {
   try {
     let liveReadingData = req.body;
     const updateLiveData = await Dispencer.findOneAndUpdate(
@@ -98,7 +137,7 @@ let updateLiveReading = async (req,res) => {
         new: true,
       }
     );
-    res.status(200).json({message:"Reading Updated"})
+    res.status(200).json({ message: "Reading Updated" });
   } catch (error) {
     res.json(error);
   }
@@ -110,5 +149,5 @@ module.exports = {
   postDispencer,
   putDispencer,
   deleteDispencer,
-  updateLiveReading
+  updateLiveReading,
 };

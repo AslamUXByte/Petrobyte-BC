@@ -1,14 +1,11 @@
 const mongoose = require("mongoose");
 
-const ccSchema = new mongoose.Schema({
-  dispencer: {
+const dispencerSchema = new mongoose.Schema({
+  dispencer_name: {
     type: String,
   },
-  sub_dispencer: {
-    type: String,
-  },
-  fuel_id: {
-    type: mongoose.Schema.Types.ObjectId,ref:'Fuels',
+  sub_dispencer_id: {
+    type: mongoose.Schema.Types.ObjectId,ref:'SubDispencer',
   },
   live_reading: {
     type: String,
@@ -18,4 +15,4 @@ const ccSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Dispencer", ccSchema);
+module.exports = mongoose.model("Dispencer", dispencerSchema);

@@ -13,6 +13,9 @@ const expenceSchema = new mongoose.Schema({
   expence_amount: {
     type: Number,
   },
+  comments: {
+    type: Number,
+  },
 });
 
 module.exports = mongoose.model("Expence", expenceSchema);
