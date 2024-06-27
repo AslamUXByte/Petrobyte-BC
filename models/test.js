@@ -4,7 +4,7 @@ const testSchema = new mongoose.Schema({
   date: {
     type: String,
   },
-  dispenser: {
+  dispencer_id: {
     type: mongoose.Schema.Types.ObjectId,ref:'Dispencer',
   },
   fuel_quantity:{

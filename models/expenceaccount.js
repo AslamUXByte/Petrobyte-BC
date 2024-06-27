@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const expenceSchema = new mongoose.Schema({
+const expenceAccSchema = new mongoose.Schema({
   date: {
     type: String,
   },
@@ -8,14 +8,16 @@ const expenceSchema = new mongoose.Schema({
     type: String,
   },
   emp_id: {
-    type: mongoose.Schema.Types.ObjectId,ref:'Employee',
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Employee",
+    default: null,
   },
   expence_amount: {
     type: Number,
   },
-  comments: {
-    type: Number,
-  },
+  expence_comment:{
+    type: String,
+  }
 });
 
-module.exports = mongoose.model("Expence", expenceSchema);
+module.exports = mongoose.model("ExpenceAccount", expenceAccSchema);

@@ -1,4 +1,5 @@
 const Test = require("../models/test");
+const Dispencer = require("../models/dispencer");
 
 let getTest = async (req, res) => {
   try {
@@ -14,33 +15,56 @@ let getTest = async (req, res) => {
     // }
 
     let test = await Test.find().skip(startIndex).limit(limit);
-    let count =await Test.countDocuments({});
-    res.status(200).json({ message: {
-      count,
-      test,
-      currentPage: page,
-      totalPages: Math.ceil(count / limit),
-    }, });
+    let count = await Test.countDocuments({});
+    res.status(200).json({
+      message: {
+        count,
+        test,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+      },
+    });
   } catch (error) {
     res.json(error);
   }
 };
 
 let getTestById = async (req, res) => {
-  let product_id = req.query.id;
+  let test_id = req.query.id;
   try {
-    let product = await Test.findOne({ _id: product_id });
-    res.status(200).json({ message: product });
+    let test = await Test.findOne({ _id: test_id });
+    res.status(200).json({ message: test });
   } catch (error) {
     res.json(error);
   }
 };
 
 let postTest = async (req, res) => {
-  let testData = req.body;
   try {
-    let saveData = await Test.create(testData);
-    res.status(200).json({ message: saveData });
+    let testData = req.body;
+    let dispencerName = testData.dispencer_name;
+    let subDispencerId = testData.sub_dispencer_id;
+    let dispencerId = await Dispencer.findOne({
+      dispencer_name: dispencerName,
+      sub_dispencer_id: subDispencerId,
+    });
+
+    let testDataToSave = {
+      date: testData.date,
+      dispencer_id: dispencerId._id,
+      fuel_quantity: testData.fuel_quantity,
+    };
+
+    let newLiveReading = dispencerId.live_reading + testData.fuel_quantity;
+
+    let saveData = await Test.create(testDataToSave);
+
+    let updateLiveReading = await Dispencer.findOneAndUpdate(
+      { _id: dispencerId._id },
+      { live_reading: newLiveReading },
+      { new: true }
+    );
+    res.status(200).json({ message: { saveData, updateLiveReading } });
   } catch (error) {
     res.json(error);
   }

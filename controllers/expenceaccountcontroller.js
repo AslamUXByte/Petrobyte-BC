@@ -1,8 +1,8 @@
 const ExpenceAccount = require("../models/expenceaccount");
 
 let getExpenceAccountDetails = async (req, res) => {
-  try{
-  const page = parseInt(req.query.page) || 1;
+  try {
+    const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 15;
 
     const startIndex = (page - 1) * limit;
@@ -28,9 +28,12 @@ let getExpenceAccountDetails = async (req, res) => {
 
 let getExpenceAccountDetailsByDate = async (req, res) => {
   let date = req.query.date;
-  let dispencer =req.query.dispencer
+  let dispencer = req.query.dispencer;
   try {
-    let expenceDetails = await ExpenceAccount.find({ date: date, dispencer:dispencer }).populate("emp_id");
+    let expenceDetails = await ExpenceAccount.find({
+      date: date,
+      dispencer: dispencer,
+    }).populate("emp_id");
     res.status(200).json({ message: expenceDetails });
   } catch (error) {
     res.json(error);
@@ -39,11 +42,10 @@ let getExpenceAccountDetailsByDate = async (req, res) => {
 
 let postExpenceAccountDetails = async (req, res) => {
   let expenceDetails = req.body;
+  console.log(expenceDetails);
   try {
-
-      let saveData = await ExpenceAccount.create(expenceDetails);
-    
-    res.status(200).json({ message: "Saved" });
+    let saveData = await ExpenceAccount.create(expenceDetails);
+    res.status(200).json({ message: saveData });
   } catch (error) {
     res.json(error);
   }
@@ -73,8 +75,6 @@ let deleteExpenceAccountDetails = async (req, res) => {
     res.json(error);
   }
 };
-
-
 
 module.exports = {
   getExpenceAccountDetails,
