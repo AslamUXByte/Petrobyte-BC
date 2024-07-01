@@ -1,19 +1,19 @@
 const express = require("express");
 const {
-  getDispencer,
-  getDispencerById,
+  getAllDispencer,
+  getDispencers,
   postDispencer,
   putDispencer,
   deleteDispencer,
-  updateLiveReading,
+  deleteSubDispencer,
 } = require("../controllers/dispencercontroller");
 const router = express.Router();
 
-router.get("/GETAllDispencer", getDispencer);
-router.get("/GETDispeencerbyId", getDispencerById);
+router.get("/GETAllDispencer", getAllDispencer);
+router.get("/GETDispencers", getDispencers);
 router.post("/POSTDispencer", postDispencer);
 router.put("/PUTDispencer", putDispencer);
-router.put("/updateLiveReading", updateLiveReading);
 router.delete("/DELETEDispencer", deleteDispencer);
+router.delete("/DELETESubDispencer", deleteSubDispencer);
 
 module.exports = router;

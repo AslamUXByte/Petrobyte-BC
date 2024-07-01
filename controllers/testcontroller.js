@@ -55,7 +55,7 @@ let postTest = async (req, res) => {
       fuel_quantity: testData.fuel_quantity,
     };
 
-    let newLiveReading = dispencerId.live_reading + testData.fuel_quantity;
+    let newLiveReading = parseFloat(dispencerId.live_reading) + parseFloat(testData.fuel_quantity);
 
     let saveData = await Test.create(testDataToSave);
 

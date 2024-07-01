@@ -1,6 +1,6 @@
 const Dispencer = require("../models/dispencer");
 
-let getDispencer = async (req, res) => {
+let getAllDispencer = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -66,7 +66,7 @@ let getDispencer = async (req, res) => {
   }
 };
 
-let getDispencerById = async (req, res) => {
+let getDispencers = async (req, res) => {
   try {
     let dispencers = await Dispencer.find().populate({
       path: "sub_dispencer_id",
@@ -117,41 +117,33 @@ let putDispencer = async (req, res) => {
 
 let deleteDispencer = async (req, res) => {
   try {
-    let id = req.query.id;
-    let dispencer = await Dispencer.find({ _id: id });
+    let name = req.query.name;
 
-    if (!dispencer) {
-      res.status(200).json({ message: "No Dispencer Found" });
-    } else {
-      const removeDispencer = await Dispencer.findOneAndDelete({ _id: id });
-      res.status(200).json({ message: "Dispencer Removed" });
-    }
+    const removeDispencer = await Dispencer.deleteMany({
+      dispencer_name: name,
+    });
+    res.status(200).json({ message: "Dispencer Removed" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json('Something Went Wrong');
   }
 };
 
-let updateLiveReading = async (req, res) => {
+let deleteSubDispencer = async (req, res) => {
   try {
-    let liveReadingData = req.body;
-    const updateLiveData = await Dispencer.findOneAndUpdate(
-      { _id: liveReadingData.id },
-      liveReadingData,
-      {
-        new: true,
-      }
-    );
-    res.status(200).json({ message: "Reading Updated" });
+    let id = req.query.id;
+
+    const removeDispencer = await Dispencer.findOneAndDelete({ _id: id });
+    res.status(200).json({ message: "SubDispencer Removed" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json('Something Went Wrong');
   }
 };
 
 module.exports = {
-  getDispencer,
-  getDispencerById,
+  getAllDispencer,
+  getDispencers,
   postDispencer,
   putDispencer,
   deleteDispencer,
-  updateLiveReading,
+  deleteSubDispencer,
 };
