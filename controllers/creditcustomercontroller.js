@@ -85,19 +85,19 @@ let deleteCC = async (req, res) => {
   }
 };
 
-const updateCreditAmount =(req,res)=>{
+const updateCreditAmount =async (req,res)=>{
   try {
     let ccData = req.body;
     console.log(ccData)
     
-      const putCC = CreditCustomer.findByIdAndUpdate(
+      const putCC = await CreditCustomer.findOneAndUpdate(
         { _id: ccData.id },
         {credit_amount:ccData.credit_amount},
         {
           new: true, runValidators: true
         }
       );
-      res.status(200).json({ message: "CC Details Updated" });
+      res.status(200).json({ message: putCC });
     
   } catch (error) {
     res.json(error);
