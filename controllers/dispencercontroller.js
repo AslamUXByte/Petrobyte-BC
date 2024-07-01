@@ -132,7 +132,7 @@ let deleteSubDispencer = async (req, res) => {
   try {
     let id = req.query.id;
 
-    const removeDispencer = await Dispencer.findOneAndDelete({ _id: id });
+    const removeDispencer = await Dispencer.deleteOne({ _id: id });
     res.status(200).json({ message: "SubDispencer Removed" });
   } catch (error) {
     res.status(400).json('Something Went Wrong');
