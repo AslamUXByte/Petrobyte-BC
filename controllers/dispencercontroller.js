@@ -130,12 +130,17 @@ let deleteDispencer = async (req, res) => {
 
 let deleteSubDispencer = async (req, res) => {
   try {
-    let id = req.query.id;
-
-    const removeDispencer = await Dispencer.deleteOne({ _id: id });
+    let dispencerName=req.query.name;
+    let subDispencerId = req.query.id;
+    let dispencerId = await Dispencer.findOne({
+      dispencer_name: dispencerName,
+      sub_dispencer_id: subDispencerId,
+    });
+    const removeDispencer = await Dispencer.deleteOne({ _id: dispencerId._id });
     res.status(200).json({ message: "SubDispencer Removed" });
   } catch (error) {
     res.status(400).json('Something Went Wrong');
+    console.log(error)
   }
 };
 
