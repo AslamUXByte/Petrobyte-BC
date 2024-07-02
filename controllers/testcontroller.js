@@ -14,7 +14,12 @@ let getTest = async (req, res) => {
     //   query.product_name = { $regex: product_name, $options: 'i' };
     // }
 
-    let test = await Test.find().skip(startIndex).limit(limit);
+    let test = await Test.find().populate({
+      path: "dispencer_id",
+      populate: {
+        path: "sub_dispencer_id",
+      },
+    }).skip(startIndex).limit(limit);
     let count = await Test.countDocuments({});
     res.status(200).json({
       message: {
