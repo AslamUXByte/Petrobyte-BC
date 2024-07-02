@@ -54,7 +54,7 @@ let putCC = async (req, res) => {
     if (!CC) {
       res.status(200).json({ message: "No CC Found" });
     } else {
-      const putCC = CreditCustomer.findOneAndUpdate(
+      const putCC =await CreditCustomer.findOneAndUpdate(
         { _id: id },
         ccData,
         {
