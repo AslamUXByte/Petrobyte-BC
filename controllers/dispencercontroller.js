@@ -88,28 +88,22 @@ let postDispencer = async (req, res) => {
     }
     res.status(200).json({ message: "Dispencer Added Successfully" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Something Went Wrong, Try Again" });
   }
 };
 
 let putDispencer = async (req, res) => {
   try {
     let dispencerData = req.body;
-    let id = dispencerData.id;
-    let dispencer = await Dispencer.find({ _id: id });
 
-    if (!dispencer) {
-      res.status(200).json({ message: "No Dispencer Found" });
-    } else {
-      const updateDispencer = await Dispencer.findOneAndUpdate(
-        { _id: id },
-        dispencerData,
-        {
-          new: true,
-        }
-      );
-      res.status(200).json({ message: "Dispencer Details Updated" });
-    }
+    let dispencer = await Dispencer.find({
+      _id: dispencerData[0].id,
+    });
+    let dispencerName = await Dispencer.find({
+      dispencer_name: dispencerData[0].id,
+    });
+
+    res.status(200).json({ message: dispencer });
   } catch (error) {
     res.json(error);
   }
@@ -122,25 +116,45 @@ let deleteDispencer = async (req, res) => {
     const removeDispencer = await Dispencer.deleteMany({
       dispencer_name: name,
     });
-    res.status(200).json({ message: "Dispencer Removed" });
+    if (removeDispencer) res.status(200).json({ message: "Dispencer Removed" });
+    else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
-    res.status(400).json('Something Went Wrong');
+    res.status(400).json("Something Went Wrong");
   }
 };
 
 let deleteSubDispencer = async (req, res) => {
   try {
-    let dispencerName=req.query.name;
+    let dispencerName = req.query.name;
     let subDispencerId = req.query.id;
     let dispencerId = await Dispencer.findOne({
       dispencer_name: dispencerName,
       sub_dispencer_id: subDispencerId,
     });
-    const removeDispencer = await Dispencer.deleteOne({ _id: dispencerId._id });
-    res.status(200).json({ message: "SubDispencer Removed" });
+    const removeSubDispencer = await Dispencer.deleteOne({
+      _id: dispencerId._id,
+    });
+    if (removeSubDispencer)
+      res.status(200).json({ message: "SubDispencer Removed" });
+    else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
-    res.status(400).json('Something Went Wrong');
-    console.log(error)
+    res.status(400).json("Something Went Wrong");
+  }
+};
+
+let getSubDispencer = async (req, res) => {
+  try {
+    let name = req.query.name;
+    let dispencersFromDb = await Dispencer.find({
+      dispencer_name: name,
+    }).populate("sub_dispencer_id");
+    let dispencerToSend = [];
+    dispencersFromDb.map((item) => {
+      dispencerToSend.push(item.sub_dispencer_id);
+    });
+    res.status(200).json({ message: dispencerToSend });
+  } catch (error) {
+    res.status(400).json("Something Went Wrong");
   }
 };
 
@@ -151,4 +165,5 @@ module.exports = {
   putDispencer,
   deleteDispencer,
   deleteSubDispencer,
+  getSubDispencer,
 };

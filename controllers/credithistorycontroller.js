@@ -45,7 +45,7 @@ let postCreditHistory = async (req, res) => {
 
     let insertCreditHistory = await CreditHistory.create(creditData);
     if(insertCreditHistory) res.status(200).json({ message: "Credit Added" });
-    else res.status(200).json({ message: "Give Correct Details" });
+    else res.status(200).json({ message: "Action Failed, Try Again" });
   } catch (error) {
     res.status(400).json({ message: "Something Went Wrong, Please try again" });
   }
@@ -55,7 +55,7 @@ let putCreditHistory = async (req, res) => {
   try {
     let creditData = req.body;
     let id = creditData.id;
-    let CreditHistory = CreditHistory.find({ _id: id });
+    console.log(creditData)
 
     const putCreditHistory = await CreditHistory.findOneAndUpdate(
       { _id: id },
@@ -65,7 +65,7 @@ let putCreditHistory = async (req, res) => {
       }
     );
     if(putCreditHistory) res.status(200).json({ message: "Credit Details Updated" });
-    else res.status(400).json({ message: "Give Correct Details" });
+    else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
     res.status(400).json({ message: "Something Went Wrong, Please try again" });
   }
@@ -79,7 +79,7 @@ let deleteCreditHistory = async (req, res) => {
       _id: id,
     });
     if(deleteCreditHistory) res.status(200).json({ message: "CreditHistory Removed" });
-    else res.status(400).json({ message: "Wrong Data" });
+    else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
     res.status(400).json({ message: "Something Went Wrong, Please try again" });
   }

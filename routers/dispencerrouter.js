@@ -6,6 +6,7 @@ const {
   putDispencer,
   deleteDispencer,
   deleteSubDispencer,
+  getSubDispencer
 } = require("../controllers/dispencercontroller");
 const router = express.Router();
 
@@ -15,5 +16,6 @@ router.post("/POSTDispencer", postDispencer);
 router.put("/PUTDispencer", putDispencer);
 router.delete("/DELETEDispencer", deleteDispencer);
 router.delete("/DELETESubDispencer", deleteSubDispencer);
+router.get("/GETSubDispencer", getSubDispencer);
 
 module.exports = router;
