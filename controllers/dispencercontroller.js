@@ -100,10 +100,47 @@ let putDispencer = async (req, res) => {
       _id: dispencerData[0].id,
     });
     let dispencerName = await Dispencer.find({
-      dispencer_name: dispencerData[0].id,
+      dispencer_name: dispencer[0].dispencer_name,
     });
+    const dbMap = new Map(
+      dispencerName.map((item) => [item.sub_dispencer_id, item])
+    );
+    const requestMap = new Map(
+      dispencerData.map((item) => [item.sub_dispencer_id, item])
+    );
+    console.log(requestMap);
 
-    res.status(200).json({ message: dispencer });
+    for (const requestItem of dispencerData) {
+      const dbItem = dbMap.get(requestItem.sub_dispencer_id);
+      if (dbItem) {
+        if (dbItem.sub_dispencer_id == requestItem.sub_dispencer_id) {
+          await Dispencer.findOneAndUpdate(
+            { sub_dispencer_id: dbItem.sub_dispencer_id },
+            {
+              dispencer_name: requestItem.dispencer_name,
+              sub_dispencer_id: requestItem.sub_dispencer_id,
+              live_reading: requestItem.live_reading,
+            }
+          );
+        }
+      }else {
+        await Dispencer.create(requestItem);
+      }
+      
+    }
+
+    for(let disp of dispencerName){
+      console.log("delete disp",disp);
+      const reqItem = requestMap.get(disp.sub_dispencer_id._id);
+      console.log("delete item find ? ->",reqItem);
+      if(!reqItem){
+        let deleteDispencer = await Dispencer.deleteOne({sub_dispencer_id:disp.sub_dispencer_id._id})
+      }
+    }
+      
+      
+
+    res.status(200).json({ message: "done" });
   } catch (error) {
     res.json(error);
   }

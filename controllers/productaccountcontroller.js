@@ -4,14 +4,13 @@ let getProductAccountDetails = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 15;
-
     const startIndex = (page - 1) * limit;
 
-    let fuelDetails = await FuelAccount.find()
-      .populate("emp_id")
+    let fuelDetails = await ProductAccount.find()
       .skip(startIndex)
-      .limit(limit);
-    let count = await FuelAccount.countDocuments({});
+      .limit(limit)
+      .populate("product_id");
+    let count = await ProductAccount.countDocuments({});
 
     res.status(200).json({
       message: {
@@ -29,7 +28,9 @@ let getProductAccountDetails = async (req, res) => {
 let getProductAccountDetailsByDate = async (req, res) => {
   let date = req.query.date;
   try {
-    let productAccountDetails = await ProductAccount.find({ date: date }).populate('product_id');
+    let productAccountDetails = await ProductAccount.find({
+      date: date,
+    }).populate("product_id");
     res.status(200).json({ message: productAccountDetails });
   } catch (error) {
     res.json(error);
