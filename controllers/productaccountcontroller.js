@@ -57,7 +57,8 @@ let putProductAccountDetails = async (req, res) => {
       productDetails,
       { new: true }
     );
-    res.status(200).json({ message: "Details Updated" });
+    if(putData) res.status(200).json({ message: "Details Updated" });
+    else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
     res.json(error);
   }
@@ -68,7 +69,8 @@ let deleteProductAccountDetails = async (req, res) => {
 
   try {
     const deleteData = await ProductAccount.findOneAndDelete({ _id: id });
-    res.status(200).json({ message: "Removed" });
+    if(deleteData) res.status(200).json({ message: "Removed" });
+    else res.status(200).json({ message: "Action Failed, Try Again" });
   } catch (error) {
     res.json(error);
   }

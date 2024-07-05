@@ -15,9 +15,10 @@ let postSubDispencer = async (req, res) => {
     let subDispencerData = req.body;
     let insertDispencer = await SubDispencer.create(subDispencerData);
 
-    res.status(200).json({ message: insertDispencer });
+    if(insertDispencer) res.status(200).json({ message: "Added" });
+    else res.status(400).json({ message: "Failed" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Failed" });
   }
 };
 
@@ -29,9 +30,10 @@ let updateLiveRating = async (req, res) => {
       { live_reading: putReading.live_reading },
       { new: true, runValidators: true }
     );
-    res.status(200).json({message:"Reading Updated"})
+    if(updateReading) res.status(200).json({message:"Reading Updated"})
+    else res.status(400).json({message:"Action Failed, Try Again"})
   } catch (error) {
-    res.status(400).json({message:"Reading Updation Failed"})
+    res.status(400).json({message:"Action Failed, Try Again"})
   }
 };
 

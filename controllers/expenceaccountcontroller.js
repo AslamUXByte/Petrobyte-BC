@@ -45,7 +45,8 @@ let postExpenceAccountDetails = async (req, res) => {
   console.log(expenceDetails);
   try {
     let saveData = await ExpenceAccount.create(expenceDetails);
-    res.status(200).json({ message: saveData });
+    if(saveData) res.status(200).json({ message: "Added" });
+    else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
     res.json(error);
   }
@@ -59,9 +60,10 @@ let putExpenceAccountDetails = async (req, res) => {
       expenceDetails,
       { new: true }
     );
-    res.status(200).json({ message: "Details Updated" });
+    if(putData) res.status(200).json({ message: "Details Updated" });
+    else res.status(400).json({ message: "Action Failed" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Action Failed, Try Again" });
   }
 };
 
@@ -70,7 +72,8 @@ let deleteExpenceAccountDetails = async (req, res) => {
 
   try {
     const deleteData = await ExpenceAccount.findOneAndDelete({ _id: id });
-    res.status(200).json({ message: "Removed" });
+    if(deleteData) res.status(200).json({ message: "Deleted" });
+    else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
     res.json(error);
   }

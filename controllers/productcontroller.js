@@ -40,7 +40,8 @@ let postProducts = async (req, res) => {
   let productData = req.body;
   try {
     let saveData = await Products.create(productData);
-    res.status(200).json({ message: "Product Added Successfully" });
+    if(saveData) res.status(200).json({ message: "Product Added Successfully" });
+    else res.status(400).json({ message: "Failed, try Again" });
   } catch (error) {
     res.json(error);
   }
@@ -54,7 +55,8 @@ let putProducts = async (req, res) => {
       productData,
       { new: true }
     );
-    res.status(200).json({ message: "Product Details Updated" });
+    if(updateData) res.status(200).json({ message: "Product Details Updated" });
+    else res.status(400).json({ message: "Action Failed, try Again" });
   } catch (error) {
     res.json(error);
   }
@@ -65,7 +67,8 @@ let deleteProducts = async (req, res) => {
 
   try {
     const result = await Products.findOneAndDelete({ _id: product_id });
-    res.status(200).json({ message: "Product Removed" });
+    if(result) res.status(200).json({ message: "Product Removed" });
+    else res.status(200).json({ message: "Action Failed, try Again" });
   } catch (error) {
     res.json(error);
   }

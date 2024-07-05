@@ -44,13 +44,14 @@ let putFuels = async (req, res) => {
 };
 
 let deleteFuels = async (req, res) => {
-  let fuelId = req.query.id;
-
+  
   try {
+    let fuelId = req.query.id;
     const deleteFuel = await Fuels.findOneAndDelete({ _id: fuelId });
-    res.status(200).json({ message: "Fuel Removed" });
+    if(deleteFuel) res.status(200).json({ message: "Fuel Removed" });
+    else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Action Failed, Try Again" });
   }
 };
 

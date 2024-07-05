@@ -83,20 +83,29 @@ let putTest = async (req, res) => {
       testData,
       { new: true }
     );
-    res.status(200).json({ message: "Test Details Updated" });
+    if(updateData) res.status(200).json({ message: "Test Details Updated" });
+    else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Action Failed, Try Again" });
   }
 };
 
 let deleteTest = async (req, res) => {
   let test_id = req.query.id;
+  let testData = req.body;
 
   try {
     const result = await Test.findOneAndDelete({ _id: test_id });
-    res.status(200).json({ message: "Test Removed" });
+
+    let dispencerId = await Dispencer.findOne({
+      dispencer_name: dispencerName,
+      sub_dispencer_id: subDispencerId,
+    });
+    
+    if(result) res.status(200).json({ message: "Test Removed" });
+    else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Action Failed, Try Again" });
   }
 };
 

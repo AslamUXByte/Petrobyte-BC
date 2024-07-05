@@ -102,45 +102,72 @@ let putDispencer = async (req, res) => {
     let dispencerName = await Dispencer.find({
       dispencer_name: dispencer[0].dispencer_name,
     });
-    const dbMap = new Map(
-      dispencerName.map((item) => [item.sub_dispencer_id, item])
-    );
-    const requestMap = new Map(
-      dispencerData.map((item) => [item.sub_dispencer_id, item])
-    );
-    console.log(requestMap);
+    const toInsert = [];
+    const toDelete = [];
+    const toUpdate = [];
 
-    for (const requestItem of dispencerData) {
-      const dbItem = dbMap.get(requestItem.sub_dispencer_id);
-      if (dbItem) {
-        if (dbItem.sub_dispencer_id == requestItem.sub_dispencer_id) {
-          await Dispencer.findOneAndUpdate(
-            { sub_dispencer_id: dbItem.sub_dispencer_id },
-            {
-              dispencer_name: requestItem.dispencer_name,
-              sub_dispencer_id: requestItem.sub_dispencer_id,
-              live_reading: requestItem.live_reading,
-            }
-          );
+    // Create a set of sub_dispencer_ids from the dbArray for quick lookup
+    const dbSubDispencerIds = new Set(
+      dispencerName.map((item) => item.sub_dispencer_id.toString())
+    );
+    console.log(dbSubDispencerIds);
+    // Create a set of sub_dispencer_ids from the inputBody for quick lookup
+    const inputSubDispencerIds = new Set(
+      dispencerData.map((item) => item.sub_dispencer_id)
+    );
+    console.log(inputSubDispencerIds);
+    // Find items to insert
+    dispencerData.forEach((item) => {
+      if (!dbSubDispencerIds.has(item.sub_dispencer_id)) {
+        toInsert.push(item);
+      }
+    });
+
+    // Find items to delete
+    dispencerName.forEach((item) => {
+      if (!inputSubDispencerIds.has(item.sub_dispencer_id.toString())) {
+        toDelete.push(item);
+      }
+    });
+
+    // Find items to update
+    dispencerData.forEach((inputItem) => {
+      dispencerName.forEach((dbItem) => {
+        if (inputItem.sub_dispencer_id === dbItem.sub_dispencer_id.toString()) {
+          toUpdate.push({
+            _id: dbItem._id,
+            dispencer_name: inputItem.dispencer_name,
+            live_reading: inputItem.live_reading,
+          });
         }
-      }else {
-        await Dispencer.create(requestItem);
-      }
-      
+      });
+    });
+
+    for (let item of toInsert) {
+      await Dispencer.create(item);
     }
 
-    for(let disp of dispencerName){
-      console.log("delete disp",disp);
-      const reqItem = requestMap.get(disp.sub_dispencer_id._id);
-      console.log("delete item find ? ->",reqItem);
-      if(!reqItem){
-        let deleteDispencer = await Dispencer.deleteOne({sub_dispencer_id:disp.sub_dispencer_id._id})
-      }
+    for (let item of toDelete) {
+      await Dispencer.deleteOne({
+        _id: item._id,
+      });
     }
-      
-      
 
-    res.status(200).json({ message: "done" });
+    for (let item of toUpdate) {
+      await Dispencer.findOneAndUpdate(
+        { _id: item._id },
+        {
+          dispencer_name: item.dispencer_name,
+          sub_dispencer_id: item.sub_dispencer_id,
+          live_reading: item.live_reading,
+        },
+        {
+          new: true,
+        }
+      );
+    }
+
+    res.status(200).json({ message: "Action Complete" });
   } catch (error) {
     res.json(error);
   }
