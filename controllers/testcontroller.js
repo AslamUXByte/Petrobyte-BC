@@ -97,11 +97,11 @@ let deleteTest = async (req, res) => {
   try {
     const result = await Test.findOneAndDelete({ _id: test_id });
 
-    let dispencerId = await Dispencer.findOne({
-      dispencer_name: dispencerName,
-      sub_dispencer_id: subDispencerId,
-    });
-    
+    // let dispencerId = await Dispencer.findOne({
+    //   dispencer_name: dispencerName,
+    //   sub_dispencer_id: subDispencerId,
+    // });
+
     if(result) res.status(200).json({ message: "Test Removed" });
     else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
