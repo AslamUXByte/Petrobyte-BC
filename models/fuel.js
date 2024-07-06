@@ -7,6 +7,9 @@ const fuelSchema = new mongoose.Schema({
   fuel_price: {
     type: Number,
   },
+  fuel_previous_price: {
+    type: Number,
+  },
   density: {
     type: String,
   },

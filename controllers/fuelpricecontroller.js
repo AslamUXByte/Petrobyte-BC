@@ -23,7 +23,8 @@ let postFuels = async (req, res) => {
   let fuelsData = req.body;
   try {
     let fuels = await Fuels.create(fuelsData);
-    res.status(200).json({ message: "Inserted" });
+    if(fuels) res.status(200).json({ message: "Inserted" });
+    else res.status(400).json({ message: "Failed" });
   } catch (error) {
     res.json(error);
   }
@@ -34,10 +35,13 @@ let putFuels = async (req, res) => {
   try {
     const updateData = await Fuels.findOneAndUpdate(
       { _id: fuelsData._id },
-      { fuel_price: fuelsData.fuelPrice },
+      { fuel_price: fuelsData.fuel_price,
+        fuel_previous_price: fuelsData.fuel_previous_price
+       },
       { new: true }
     );
-    res.status(200).json({ message: "Fuel Price Updated" });
+    if(updateData) res.status(200).json({ message: "Fuel Price Updated" });
+    else res.status(400).json({ message: "Fuel Price Updated" });
   } catch (error) {
     res.json(error);
   }

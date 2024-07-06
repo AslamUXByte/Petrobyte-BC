@@ -5,7 +5,8 @@ const fuelAccSchema = new mongoose.Schema({
     type: String,
   },
   emp_id: {
-    type: mongoose.Schema.Types.ObjectId,ref:'Employee',
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Employee",
   },
   emp_from_time: {
     type: String,
@@ -13,11 +14,12 @@ const fuelAccSchema = new mongoose.Schema({
   emp_to_time: {
     type: String,
   },
-  dispencer: {
+  dispencer_name: {
     type: String,
   },
-  fueltype: {
-    type: String,
+  sub_dispencer_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "SubDispencer",
   },
   fuel_start_reading: {
     type: Number,

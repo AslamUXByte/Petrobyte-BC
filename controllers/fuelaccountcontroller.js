@@ -9,6 +9,7 @@ let getFuelAccountDetails = async (req, res) => {
 
     let fuelDetails = await FuelAccount.find()
       .populate("emp_id")
+      .populate("sub_dispencer_id")
       .skip(startIndex)
       .limit(limit);
     let count = await FuelAccount.countDocuments({});
@@ -33,7 +34,7 @@ let getFuelAccountDetailsByDate = async (req, res) => {
     let fuelDetails = await FuelAccount.find({
       date: date,
       dispencer: dispencer,
-    }).populate("emp_id");
+    }).populate("emp_id").populate("sub_dispencer_id")
     res.status(200).json({ message: fuelDetails });
   } catch (error) {
     res.json(error);
@@ -95,7 +96,7 @@ const getFuelAccountOverview = async (req, res) => {
 
     const dateAndDispencerWiseGroupedData = dateWiseGroupedData.map((item) =>
       item.reduce((acc, curr) => {
-        let group = acc.find((g) => g[0].dispencer === curr.dispencer);
+        let group = acc.find((g) => g[0].dispencer_name === curr.dispencer_name);
         if (group) {
           group.push(curr);
         } else {
@@ -122,11 +123,11 @@ const getFuelAccountOverview = async (req, res) => {
             deiselTotalAmount = deiselTotalAmount + dispencerWiseData.amount;
           }
           date = dispencerWiseData.date;
-          dispencer = dispencerWiseData.dispencer;
+          dispencer = dispencerWiseData.dispencer_name;
         });
         let dataToSend = {
           date: date,
-          dispencer: dispencer,
+          dispencer_name: dispencer_name,
           petrolSaleAmount: petrolTotalAmount,
           deiselSaleAmount: deiselTotalAmount,
           netAmount: petrolTotalAmount + deiselTotalAmount,
