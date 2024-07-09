@@ -4,16 +4,6 @@ const fuelAccSchema = new mongoose.Schema({
   date: {
     type: String,
   },
-  emp_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Employee",
-  },
-  emp_from_time: {
-    type: String,
-  },
-  emp_to_time: {
-    type: String,
-  },
   dispencer_name: {
     type: String,
   },
@@ -31,15 +21,6 @@ const fuelAccSchema = new mongoose.Schema({
     type: Number,
   },
   amount: {
-    type: Number,
-  },
-  cash_inhand: {
-    type: Number,
-  },
-  cash_bank: {
-    type: Number,
-  },
-  cash_hpcard: {
     type: Number,
   },
   fuel_price_selected: {

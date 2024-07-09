@@ -1,4 +1,5 @@
 const FuelAccount = require("../models/fuelaccount");
+const Dispencer = require("../models/dispencer");
 
 let getFuelAccountDetails = async (req, res) => {
   try {
@@ -8,7 +9,6 @@ let getFuelAccountDetails = async (req, res) => {
     const startIndex = (page - 1) * limit;
 
     let fuelDetails = await FuelAccount.find()
-      .populate("emp_id")
       .populate("sub_dispencer_id")
       .skip(startIndex)
       .limit(limit);
@@ -23,21 +23,39 @@ let getFuelAccountDetails = async (req, res) => {
       },
     });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "No Data" });
   }
 };
 
 let getFuelAccountDetailsByDate = async (req, res) => {
-  let date = req.query.date;
-  let dispencer = req.query.dispencer;
   try {
+    const date = req.query.date;
+    const dispencer = req.query.dispencer;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 15;
+
+    const startIndex = (page - 1) * limit;
+
     let fuelDetails = await FuelAccount.find({
       date: date,
-      dispencer: dispencer,
-    }).populate("emp_id").populate("sub_dispencer_id")
-    res.status(200).json({ message: fuelDetails });
+      dispencer_name: dispencer,
+    })
+      .populate("sub_dispencer_id")
+      .skip(startIndex)
+      .limit(limit);
+
+    let count = await FuelAccount.countDocuments({});
+
+    res.status(200).json({
+      message: {
+        count,
+        fuelDetails,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+      },
+    });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "No Data" });
   }
 };
 
@@ -46,10 +64,22 @@ let postFuelAccountDetails = async (req, res) => {
   try {
     for (let fuelDetail of fuelDetails) {
       let saveData = await FuelAccount.create(fuelDetail);
+
+      let dispencerData = await Dispencer.find({
+        dispencer_name: fuelDetail.dispencer_name,
+        sub_dispencer_id: fuelDetail.sub_dispencer_id,
+      });
+
+      console.log(dispencerData);
+
+      let updateReading = await Dispencer.updateOne(
+        { _id: dispencerData[0]._id },
+        { live_reading: fuelDetail.fuel_end_reading }
+      );
     }
     res.status(200).json({ message: "Saved" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Error, Try Again" });
   }
 };
 
@@ -61,9 +91,10 @@ let putFuelAccountDetails = async (req, res) => {
       fuelDetails,
       { new: true }
     );
-    res.status(200).json({ message: "Details Updated" });
+    if (putData) res.status(200).json({ message: "Details Updated" });
+    else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Error, Try Again" });
   }
 };
 
@@ -72,10 +103,10 @@ let deleteFuelAccountDetails = async (req, res) => {
 
   try {
     const deleteData = await FuelAccount.findOneAndDelete({ _id: id });
-    if(deleteData) res.status(200).json({ message: "Removed" });
+    if (deleteData) res.status(200).json({ message: "Removed" });
     else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Error, Try Again" });
   }
 };
 
@@ -83,61 +114,23 @@ const getFuelAccountOverview = async (req, res) => {
   try {
     let fuelDetails = await FuelAccount.find();
 
-    const dateWiseGroupedData = fuelDetails.reduce((acc, curr) => {
-      let group = acc.find((g) => g[0].date === curr.date);
-      if (group) {
-        group.push(curr);
-      } else {
-        acc.push([curr]);
-      }
-
-      return acc;
-    }, []);
-
-    const dateAndDispencerWiseGroupedData = dateWiseGroupedData.map((item) =>
-      item.reduce((acc, curr) => {
-        let group = acc.find((g) => g[0].dispencer_name === curr.dispencer_name);
-        if (group) {
-          group.push(curr);
-        } else {
-          acc.push([curr]);
-        }
-
+    const groupedData = fuelDetails.reduce(
+      (acc, { date, dispencer_name, amount }) => {
+        const key = `${date}-${dispencer_name}`;
+        acc[key] = acc[key] || { date, dispencer_name, total_amount: 0 };
+        acc[key].total_amount += amount;
         return acc;
-      }, [])
+      },
+      {}
     );
 
-    let fuelAccountOverview = [];
+    // Converting the grouped data back to an array
+    const result = Object.values(groupedData);
 
-    dateAndDispencerWiseGroupedData.map((dateWiseData) => {
-      dateWiseData.map((dispencerWiseDatas) => {
-        let petrolTotalAmount = 0;
-        let deiselTotalAmount = 0;
-        let date = null;
-        let dispencer = null;
-        dispencerWiseDatas.map((dispencerWiseData) => {
-          if (dispencerWiseData.fueltype == "Petrol") {
-            petrolTotalAmount = petrolTotalAmount + dispencerWiseData.amount;
-          }
-          if (dispencerWiseData.fueltype == "Deisel") {
-            deiselTotalAmount = deiselTotalAmount + dispencerWiseData.amount;
-          }
-          date = dispencerWiseData.date;
-          dispencer = dispencerWiseData.dispencer_name;
-        });
-        let dataToSend = {
-          date: date,
-          dispencer_name: dispencer_name,
-          petrolSaleAmount: petrolTotalAmount,
-          deiselSaleAmount: deiselTotalAmount,
-          netAmount: petrolTotalAmount + deiselTotalAmount,
-        };
-        fuelAccountOverview.push(dataToSend);
-      });
-    });
-
-    res.status(200).json(fuelAccountOverview);
-  } catch (error) {}
+    res.status(200).json({ message: result });
+  } catch (error) {
+    res.status(400).json({ message: "No Data" });
+  }
 };
 
 module.exports = {

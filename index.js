@@ -16,6 +16,8 @@ const dispencerRouter = require("./routers/dispencerrouter");
 const subDispencerRouter = require("./routers/subdispencerrouter");
 const testRouter = require("./routers/testrouter");
 const expenceAccRouter = require("./routers/expenceaccountrouter");
+const cmRouter = require("./routers/cashmanagementrouter");
+const accountReportRouter = require("./routers/reportrouter");
 
 const port = process.env.PORT || 8000;
 // const MONGO_URL=`mongodb+srv://petro-main-db-06f20494b77:HNz3517CNn3pYv751y2714ASRfqVdw@prod-us-central1-1.lfuy1.mongodb.net/petro-main-db-06f20494b77`
@@ -44,6 +46,8 @@ app.use("/dispencer", dispencerRouter);
 app.use("/subdispencer", subDispencerRouter);
 app.use("/test", testRouter);
 app.use("/expenceaccount", expenceAccRouter);
+app.use("/cashManagement", cmRouter);
+app.use("/accountReport", accountReportRouter);
 
 // PSQL
 // db.sequelize.sync()
