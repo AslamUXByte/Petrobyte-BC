@@ -7,7 +7,7 @@ const {
   deleteDispencer,
   deleteSubDispencer,
   getSubDispencer
-} = require("../controllers/dispencercontroller");
+} = require("../controllers/dispensercontroller");
 const router = express.Router();
 
 router.get("/GETAllDispencer", getAllDispencer);

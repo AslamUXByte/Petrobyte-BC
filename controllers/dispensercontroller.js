@@ -211,12 +211,14 @@ let getSubDispencer = async (req, res) => {
     let name = req.query.name;
     let dispencersFromDb = await Dispencer.find({
       dispencer_name: name,
-    }).populate("sub_dispencer_id");
-    let dispencerToSend = [];
-    dispencersFromDb.map((item) => {
-      dispencerToSend.push(item.sub_dispencer_id);
-    });
-    res.status(200).json({ message: dispencerToSend });
+    }).populate({
+        path: "sub_dispencer_id",
+        populate: {
+          path: "fuel_id",
+        },
+      });
+
+    res.status(200).json({ message: dispencersFromDb });
   } catch (error) {
     res.status(400).json("Something Went Wrong");
   }
