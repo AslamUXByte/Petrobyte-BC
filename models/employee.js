@@ -16,6 +16,10 @@ const empSchema = new mongoose.Schema({
   emp_age: {
     type: Number,
   },
+  emp_status: {
+    type: String,
+    default:"ACTIVE"
+  },
 });
 
 module.exports = mongoose.model("Employee", empSchema);

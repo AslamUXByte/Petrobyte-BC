@@ -8,7 +8,9 @@ let getEmployee = async (req, res) => {
     const startIndex = (page - 1) * limit;
 
     let emp_name = req.query.name;
-    let query = {};
+    let query = {
+      emp_status:"ACTIVE"
+    };
 
     if (emp_name) {
       query.emp_name = { $regex: emp_name, $options: "i" };
@@ -80,9 +82,9 @@ let deleteEmployee = async (req, res) => {
   let id = req.query.id;
 
   try {
-    const result = await Employee.findOneAndDelete({ _id: id });
+    const result = await Employee.findByIdAndUpdate({ _id: id },{emp_status:"DISABLED"});
     if(result)res.status(200).json({ message: "Staff Removed" });
-    else res.status(400).json({ message: "Failed" });
+    else res.status(400).json({ message: "Operation Failed" });
   } catch (error) {
     res.status(400).json({ message: "Internal Error" });
   }

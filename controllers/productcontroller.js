@@ -7,7 +7,9 @@ let getProducts = async (req, res) => {
     const startIndex = (page - 1) * limit;
 
     let product_name=req.query.name
-    let query = {};
+    let query = {
+      product_status:"ACTIVE"
+    };
 
     if (product_name) {
       query.product_name = { $regex: product_name, $options: 'i' };
@@ -66,7 +68,7 @@ let deleteProducts = async (req, res) => {
   let product_id = req.query.id;
 
   try {
-    const result = await Products.findOneAndDelete({ _id: product_id });
+    const result = await Products.findOneAndDelete({ _id: product_id },{product_status:"DISABLED"});
     if(result) res.status(200).json({ message: "Product Removed" });
     else res.status(200).json({ message: "Action Failed, try Again" });
   } catch (error) {
