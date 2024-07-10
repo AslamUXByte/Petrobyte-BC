@@ -5,11 +5,19 @@ const CreditHistory = require("../models/credithistory");
 const CM = require("../models/cashmanagement");
 
 const getAccounts = async (req, res) => {
-  let fuelAccounts = await FuelAccount.find();
-  let productAccounts = await ProductAccount.find();
-  let expenceAccounts = await ExpenceAccount.find();
-  let creditAccounts = await CreditHistory.find();
-  let cms = await CM.find();
+
+  let date = req.query.date;
+    let query = {};
+
+    if (date) {
+      query.date = { $regex: date, $options: "i" };
+    }
+
+  let fuelAccounts = await FuelAccount.find(query);
+  let productAccounts = await ProductAccount.find(query);
+  let expenceAccounts = await ExpenceAccount.find(query);
+  let creditAccounts = await CreditHistory.find(query);
+  let cms = await CM.find(query);
 
   const fuelAcc = Object.values(
     fuelAccounts.reduce((acc, { date, amount }) => {

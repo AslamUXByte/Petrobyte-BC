@@ -7,7 +7,16 @@ let getCreditHistory = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const startIndex = (page - 1) * limit;
 
-    let CreditHistorys = await CreditHistory.find({ cc_id: ccId })
+    let date = req.query.date;
+    let query = {
+      cc_id: ccId
+    };
+
+    if (date) {
+      query.date = { $regex: date, $options: "i" };
+    }
+
+    let CreditHistorys = await CreditHistory.find(query)
       .skip(startIndex)
       .limit(limit)
       .populate("cc_id")

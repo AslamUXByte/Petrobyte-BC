@@ -15,6 +15,7 @@ const ccSchema = new mongoose.Schema({
   },
   credit_amount: {
     type: Number,
+    default:0
   },
   cc_status: {
     type: String,

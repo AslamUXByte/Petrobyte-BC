@@ -6,7 +6,14 @@ let getProductAccountDetails = async (req, res) => {
     const limit = parseInt(req.query.limit) || 15;
     const startIndex = (page - 1) * limit;
 
-    let fuelDetails = await ProductAccount.find()
+    let date = req.query.date;
+    let query = {};
+
+    if (date) {
+      query.date = { $regex: date, $options: "i" };
+    }
+
+    let fuelDetails = await ProductAccount.find(query)
       .skip(startIndex)
       .limit(limit)
       .populate("product_id");

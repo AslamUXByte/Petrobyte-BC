@@ -8,7 +8,14 @@ let getFuelAccountDetails = async (req, res) => {
 
     const startIndex = (page - 1) * limit;
 
-    let fuelDetails = await FuelAccount.find()
+    let date = req.query.date;
+    let query = {};
+
+    if (date) {
+      query.date = { $regex: date, $options: "i" };
+    }
+
+    let fuelDetails = await FuelAccount.find(query)
       .populate("sub_dispencer_id")
       .skip(startIndex)
       .limit(limit);
@@ -112,7 +119,15 @@ let deleteFuelAccountDetails = async (req, res) => {
 
 const getFuelAccountOverview = async (req, res) => {
   try {
-    let fuelDetails = await FuelAccount.find();
+
+    let date = req.query.date;
+    let query = {};
+
+    if (date) {
+      query.date = { $regex: date, $options: "i" };
+    }
+
+    let fuelDetails = await FuelAccount.find(query);
 
     const groupedData = fuelDetails.reduce(
       (acc, { date, dispencer_name, amount }) => {

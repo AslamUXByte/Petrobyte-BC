@@ -7,7 +7,14 @@ let getExpenceAccountDetails = async (req, res) => {
 
     const startIndex = (page - 1) * limit;
 
-    let expenceDetails = await ExpenceAccount.find()
+    let date = req.query.date;
+    let query = {};
+
+    if (date) {
+      query.date = { $regex: date, $options: "i" };
+    }
+
+    let expenceDetails = await ExpenceAccount.find(query)
       .populate("emp_id")
       .skip(startIndex)
       .limit(limit);
