@@ -93,11 +93,38 @@ let postFuelAccountDetails = async (req, res) => {
 let putFuelAccountDetails = async (req, res) => {
   let fuelDetails = req.body;
   try {
+    let dispencerData = await Dispencer.find({
+      dispencer_name: fuelDetails.dispencer_name,
+      sub_dispencer_id: fuelDetails.sub_dispencer_id,
+    });
+
+    let difference = 0.0;
+    let updatedReading = 0.0;
+    if (dispencerData.live_reading > fuelDetails.fuel_end_reading) {
+      difference =
+        parseFloat(dispencerData.live_reading) -
+        parseFloat(fuelDetails.fuel_end_reading);
+      updatedReading =
+        parseFloat(dispencerData.live_reading) - parseFloat(difference);
+    }
+    if (dispencerData.live_reading < fuelDetails.fuel_end_reading) {
+      difference =
+        parseFloat(fuelDetails.fuel_end_reading) -
+        parseFloat(dispencerData.live_reading);
+      updatedReading =
+        parseFloat(dispencerData.live_reading) + parseFloat(difference);
+    }
     const putData = await FuelAccount.findOneAndUpdate(
       { _id: fuelDetails._id },
       fuelDetails,
       { new: true }
     );
+    if (putData) {
+      let updateReading = await Dispencer.updateOne(
+        { _id: dispencerData._id },
+        { live_reading: updatedReading }
+      );
+    }
     if (putData) res.status(200).json({ message: "Details Updated" });
     else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
@@ -119,7 +146,6 @@ let deleteFuelAccountDetails = async (req, res) => {
 
 const getFuelAccountOverview = async (req, res) => {
   try {
-
     let date = req.query.date;
     let query = {};
 

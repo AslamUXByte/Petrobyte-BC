@@ -44,9 +44,15 @@ const getAccounts = async (req, res) => {
   );
 
   const creditAcc = Object.values(
-    creditAccounts.reduce((acc, { date, amount }) => {
-      acc[date] = acc[date] || { date, total_credit_amount: 0 };
-      acc[date].total_credit_amount += amount;
+    creditAccounts.reduce((acc, { date, amount, amount_type }) => {
+      acc[date] = acc[date] || { date, total_credit_amount: 0,total_debit_amount:0 };
+      
+      if(amount_type=="Credit"){
+        acc[date].total_credit_amount += amount;
+      }
+      if(amount_type=="Debit"){
+        acc[date].total_debit_amount += amount;
+      }
       return acc;
     }, {})
   );
@@ -68,6 +74,7 @@ const getAccounts = async (req, res) => {
           total_product_amount: 0,
           total_expence_amount: 0,
           total_credit_amount: 0,
+          total_debit_amount: 0,
           total_cash_inhand: 0,
           total_cash_bank: 0,
           total_cash_other: 0,
@@ -86,7 +93,7 @@ const getAccounts = async (req, res) => {
   addToMergedData(mergedData, fuelAcc, ["total_fuel_amount"]);
   addToMergedData(mergedData, productAcc, ["total_product_amount"]);
   addToMergedData(mergedData, expenceAcc, ["total_expence_amount"]);
-  addToMergedData(mergedData, creditAcc, ["total_credit_amount"]);
+  addToMergedData(mergedData, creditAcc, ["total_credit_amount","total_debit_amount"]);
   addToMergedData(mergedData, cmAcc, [
     "total_cash_inhand",
     "total_cash_bank",
