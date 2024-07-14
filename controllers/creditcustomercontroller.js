@@ -36,14 +36,21 @@ let getCCById = async (req, res) => {
 
 let postCC = async (req, res) => {
   try {
-    let empData = req.body;
+    let ccData = req.body;
+    let contactNo = ccData.cc_contact_no;
+    let creditor = await CreditCustomer.findOne({ cc_contact_no: contactNo });
 
-    let insertCC = await CreditCustomer.create(empData);
+    if (creditor) {
+      res.status(400).json({ message: "Credit Customer Alredy Registerd" });
+    } else {
+
+    let insertCC = await CreditCustomer.create(ccData);
     if (insertCC)
       res
         .status(200)
         .json({ message: "Credit Customer Registerd Successfully" });
     else res.status(400).json({ message: "Internal Error, Try Again Later" });
+  }
   } catch (error) {
     res.status(400).json({ message: "Internal Error, Try Again Later" });
   }

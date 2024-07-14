@@ -7,14 +7,14 @@ let getTest = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const startIndex = (page - 1) * limit;
 
-    // let product_name=req.query.name
-    // let query = {};
+    let date=req.query.date
+    let query = {};
 
-    // if (product_name) {
-    //   query.product_name = { $regex: product_name, $options: 'i' };
-    // }
+    if (date) {
+      query.date = { $regex: date, $options: 'i' };
+    }
 
-    let test = await Test.find().populate({
+    let test = await Test.find(query).populate({
       path: "dispencer_id",
       populate: {
         path: "sub_dispencer_id",
