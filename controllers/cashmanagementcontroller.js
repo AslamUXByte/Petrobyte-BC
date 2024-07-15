@@ -4,10 +4,10 @@ const getCashByDate = async (req, res) => {
   try {
     let date = req.query.date;
     let cashDetails = await CM.find({ date: date });
-    if (saveCash) res.status(200).json({ message: cashDetails });
+    if (cashDetails) res.status(200).json({ message: cashDetails });
     else res.status(400).json({ message: "Error" });
   } catch (error) {
-    res.status(400).json({ message: "Error" });
+    res.status(400).json({ message: "Internal Error" });
   }
 };
 

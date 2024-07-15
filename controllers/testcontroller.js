@@ -7,19 +7,22 @@ let getTest = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const startIndex = (page - 1) * limit;
 
-    let date=req.query.date
+    let date = req.query.date;
     let query = {};
 
     if (date) {
-      query.date = { $regex: date, $options: 'i' };
+      query.date = { $regex: date, $options: "i" };
     }
 
-    let test = await Test.find(query).populate({
-      path: "dispencer_id",
-      populate: {
-        path: "sub_dispencer_id",
-      },
-    }).skip(startIndex).limit(limit);
+    let test = await Test.find(query)
+      .populate({
+        path: "dispencer_id",
+        populate: {
+          path: "sub_dispencer_id",
+        },
+      })
+      .skip(startIndex)
+      .limit(limit);
     let count = await Test.countDocuments({});
     res.status(200).json({
       message: {
@@ -60,52 +63,48 @@ let postTest = async (req, res) => {
       fuel_quantity: testData.fuel_quantity,
     };
 
-    let newLiveReading = parseFloat(dispencerId.live_reading) + parseFloat(testData.fuel_quantity);
+    let newLiveReading =
+      parseFloat(dispencerId.live_reading) + parseFloat(testData.fuel_quantity);
 
     let saveData = await Test.create(testDataToSave);
 
-    let updateLiveReading = await Dispencer.findOneAndUpdate(
-      { _id: dispencerId._id },
-      { live_reading: newLiveReading },
-      { new: true }
-    );
-    res.status(200).json({ message: { saveData, updateLiveReading } });
+    if (saveData) {
+      let updateLiveReading = await Dispencer.findOneAndUpdate(
+        { _id: dispencerId._id },
+        { live_reading: newLiveReading },
+        { new: true }
+      );
+      res.status(200).json({ message: "Test Added" });
+    } else res.status(400).json({ message: "Failed, Try Again" });
   } catch (error) {
-    res.json(error);
-  }
-};
-
-let putTest = async (req, res) => {
-  let testData = req.body;
-  try {
-    const updateData = await Test.findOneAndUpdate(
-      { _id: testData._id },
-      testData,
-      { new: true }
-    );
-    if(updateData) res.status(200).json({ message: "Test Details Updated" });
-    else res.status(400).json({ message: "Action Failed, Try Again" });
-  } catch (error) {
-    res.status(400).json({ message: "Action Failed, Try Again" });
+    res.status(400).json({ message: "Error, Try Again" });
   }
 };
 
 let deleteTest = async (req, res) => {
-  let test_id = req.query.id;
-  let testData = req.body;
-
+  
   try {
+    let testData = req.body;
     const result = await Test.findOneAndDelete({ _id: test_id });
 
-    // let dispencerId = await Dispencer.findOne({
-    //   dispencer_name: dispencerName,
-    //   sub_dispencer_id: subDispencerId,
-    // });
+    if (result) {
+      let dispencerId = await Dispencer.findOne({
+        dispencer_name: testData.dispencer_name,
+        sub_dispencer_id: testData.sub_dispencer_id,
+      });
 
-    if(result) res.status(200).json({ message: "Test Removed" });
-    else res.status(400).json({ message: "Action Failed, Try Again" });
+      let newReading =
+        parseFloat(dispencerId.live_reading) -
+        parseFloat(testData.live_reading);
+
+      let updateReading = await Dispencer.findOneAndUpdate(
+        { _id: dispencerId._id },
+        { live_reading: newReading }
+      );
+      if (updateReading) res.status(200).json({ message: "Test Removed" });
+    } else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
-    res.status(400).json({ message: "Action Failed, Try Again" });
+    res.status(400).json({ message: "Internal Error, Try Again" });
   }
 };
 
@@ -113,6 +112,5 @@ module.exports = {
   getTest,
   getTestById,
   postTest,
-  putTest,
   deleteTest,
 };

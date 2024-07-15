@@ -6,8 +6,8 @@ const {
 } = require("../controllers/cashmanagementcontroller");
 const router = express.Router();
 
-router.post("/GETCashDetails", getCashByDate);
+router.get("/GETCashDetails", getCashByDate);
 router.post("/POSTCashDetails", postCash);
-router.post("/PUTCashDetails", putCash);
+router.put("/PUTCashDetails", putCash);
 
 module.exports = router;

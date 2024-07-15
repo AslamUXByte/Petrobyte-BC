@@ -77,8 +77,6 @@ let postFuelAccountDetails = async (req, res) => {
         sub_dispencer_id: fuelDetail.sub_dispencer_id,
       });
 
-      console.log(dispencerData);
-
       let updateReading = await Dispencer.updateOne(
         { _id: dispencerData[0]._id },
         { live_reading: fuelDetail.fuel_end_reading }
