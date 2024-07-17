@@ -154,18 +154,18 @@ const getAccountsReport = async (req, res) => {
       $lte: to,
     },
   });
-  let creditAccounts = await CreditHistory.find({
-    date: {
-      $gte: from,
-      $lte: to,
-    },
-  });
-  let cms = await CM.find({
-    date: {
-      $gte: from,
-      $lte: to,
-    },
-  });
+  // let creditAccounts = await CreditHistory.find({
+  //   date: {
+  //     $gte: from,
+  //     $lte: to,
+  //   },
+  // });
+  // let cms = await CM.find({
+  //   date: {
+  //     $gte: from,
+  //     $lte: to,
+  //   },
+  // });
 
   const fuelAcc = Object.values(
     fuelAccounts.reduce((acc, { date, amount }) => {
@@ -191,30 +191,30 @@ const getAccountsReport = async (req, res) => {
     }, {})
   );
 
-  const creditAcc = Object.values(
-    creditAccounts.reduce((acc, { date, amount, amount_type }) => {
-      acc[date] = acc[date] || {
-        date,
-        total_credit_amount: 0,
-        total_debit_amount: 0,
-      };
+  // const creditAcc = Object.values(
+  //   creditAccounts.reduce((acc, { date, amount, amount_type }) => {
+  //     acc[date] = acc[date] || {
+  //       date,
+  //       total_credit_amount: 0,
+  //       total_debit_amount: 0,
+  //     };
 
-      if (amount_type == "Credit") {
-        acc[date].total_credit_amount += amount;
-      }
-      if (amount_type == "Debit") {
-        acc[date].total_debit_amount += amount;
-      }
-      return acc;
-    }, {})
-  );
+  //     if (amount_type == "Credit") {
+  //       acc[date].total_credit_amount += amount;
+  //     }
+  //     if (amount_type == "Debit") {
+  //       acc[date].total_debit_amount += amount;
+  //     }
+  //     return acc;
+  //   }, {})
+  // );
 
-  const cmAcc = cms.map((item) => ({
-    date: item.date,
-    total_cash_inhand: item.cash_inhand,
-    total_cash_bank: item.cash_bank,
-    total_cash_other: item.cash_other,
-  }));
+  // const cmAcc = cms.map((item) => ({
+  //   date: item.date,
+  //   total_cash_inhand: item.cash_inhand,
+  //   total_cash_bank: item.cash_bank,
+  //   total_cash_other: item.cash_other,
+  // }));
 
   const addToMergedData = (mergedData, array, keys) => {
     array.forEach((item) => {
@@ -225,11 +225,11 @@ const getAccountsReport = async (req, res) => {
           total_fuel_amount: 0,
           total_product_amount: 0,
           total_expence_amount: 0,
-          total_credit_amount: 0,
-          total_debit_amount: 0,
-          total_cash_inhand: 0,
-          total_cash_bank: 0,
-          total_cash_other: 0,
+          // total_credit_amount: 0,
+          // total_debit_amount: 0,
+          // total_cash_inhand: 0,
+          // total_cash_bank: 0,
+          // total_cash_other: 0,
         };
       }
       keys.forEach((key) => {
@@ -245,15 +245,15 @@ const getAccountsReport = async (req, res) => {
   addToMergedData(mergedData, fuelAcc, ["total_fuel_amount"]);
   addToMergedData(mergedData, productAcc, ["total_product_amount"]);
   addToMergedData(mergedData, expenceAcc, ["total_expence_amount"]);
-  addToMergedData(mergedData, creditAcc, [
-    "total_credit_amount",
-    "total_debit_amount",
-  ]);
-  addToMergedData(mergedData, cmAcc, [
-    "total_cash_inhand",
-    "total_cash_bank",
-    "total_cash_other",
-  ]);
+  // addToMergedData(mergedData, creditAcc, [
+  //   "total_credit_amount",
+  //   "total_debit_amount",
+  // ]);
+  // addToMergedData(mergedData, cmAcc, [
+  //   "total_cash_inhand",
+  //   "total_cash_bank",
+  //   "total_cash_other",
+  // ]);
 
   // Converting the merged object back to an array
   const account = Object.values(mergedData);
@@ -271,7 +271,8 @@ const getAccountsReport = async (req, res) => {
     message: {
       fuelAmountToReport,
       productAmountToReport,
-      expenceAmountToReport
+      expenceAmountToReport,
+      account
     },
   });
 };

@@ -13,7 +13,7 @@ let getProductAccountDetails = async (req, res) => {
       query.date = { $regex: date, $options: "i" };
     }
 
-    let fuelDetails = await ProductAccount.find(query)
+    let productAccount = await ProductAccount.find(query)
       .skip(startIndex)
       .limit(limit)
     let count = await ProductAccount.countDocuments({});
@@ -21,7 +21,7 @@ let getProductAccountDetails = async (req, res) => {
     res.status(200).json({
       message: {
         count,
-        fuelDetails,
+        productAccount,
         currentPage: page,
         totalPages: Math.ceil(count / limit),
       },
