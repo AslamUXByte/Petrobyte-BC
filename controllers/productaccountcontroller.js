@@ -16,7 +16,6 @@ let getProductAccountDetails = async (req, res) => {
     let fuelDetails = await ProductAccount.find(query)
       .skip(startIndex)
       .limit(limit)
-      .populate("product_id");
     let count = await ProductAccount.countDocuments({});
 
     res.status(200).json({

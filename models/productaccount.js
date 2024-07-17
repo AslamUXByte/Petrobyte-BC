@@ -4,8 +4,11 @@ const productAccSchema = new mongoose.Schema({
   date: {
     type: String,
   },
-  product_id: {
-    type: mongoose.Schema.Types.ObjectId,ref:'Products',
+  product_name: {
+    type: String,
+  },
+  product_price: {
+    type: Number,
   },
   quantity: {
     type: String,

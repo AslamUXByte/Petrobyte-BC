@@ -7,7 +7,14 @@ let getCC = async (req, res) => {
 
     const startIndex = (page - 1) * limit;
 
-    let CCs = await CreditCustomer.find().skip(startIndex).limit(limit);
+    let ccName = req.query.name;
+    let query = {};
+
+    if (ccName) {
+      query.cc_name = { $regex: ccName, $options: "i" };
+    }
+
+    let CCs = await CreditCustomer.find(query).skip(startIndex).limit(limit);
 
     let count = await CreditCustomer.countDocuments({});
 
