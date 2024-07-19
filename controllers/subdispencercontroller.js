@@ -6,7 +6,7 @@ let getSubDispencer = async (req, res) => {
 
     res.status(200).json(subDispencers);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(400).json({ message:"Internal Error, Try Again" });
   }
 };
 
@@ -18,7 +18,7 @@ let postSubDispencer = async (req, res) => {
     if(insertDispencer) res.status(200).json({ message: "Added" });
     else res.status(400).json({ message: "Failed" });
   } catch (error) {
-    res.status(400).json({ message: "Failed" });
+    res.status(400).json({ message: "Internal Error, Try Again" });
   }
 };
 
@@ -33,7 +33,7 @@ let updateLiveRating = async (req, res) => {
     if(updateReading) res.status(200).json({message:"Reading Updated"})
     else res.status(400).json({message:"Action Failed, Try Again"})
   } catch (error) {
-    res.status(400).json({message:"Action Failed, Try Again"})
+    res.status(400).json({message:"Internal Error, Try Again"})
   }
 };
 

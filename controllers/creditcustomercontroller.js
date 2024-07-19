@@ -27,17 +27,7 @@ let getCC = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-let getCCById = async (req, res) => {
-  let id = req.query.id;
-  try {
-    let CC = await CreditCustomer.findOne({ _id: id });
-    res.status(200).json({ message: CC });
-  } catch (error) {
-    res.json(error);
+    res.status(400).json({ message:"Something went wrong" });
   }
 };
 
@@ -117,7 +107,6 @@ const updateCreditAmount = async (req, res) => {
 
 module.exports = {
   getCC,
-  getCCById,
   postCC,
   putCC,
   deleteCC,

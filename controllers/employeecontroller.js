@@ -20,24 +20,18 @@ let getEmployee = async (req, res) => {
 
     let count = await Employee.countDocuments({});
 
-    res.status(200).json({
-      message: {
-        count,
-        employees,
-        currentPage: page,
-        totalPages: Math.ceil(count / limit),
-      },
-    });
-  } catch (error) {
-    res.status(400).json({ message: "Internal Error" });
-  }
-};
-
-let getEmployeeById = async (req, res) => {
-  let email = req.query.email;
-  try {
-    let employee = await Employee.findOne({ emp_email: email });
-    res.status(200).json({ message: employee });
+    if (employees) {
+      res.status(200).json({
+        message: {
+          count,
+          employees,
+          currentPage: page,
+          totalPages: Math.ceil(count / limit),
+        },
+      });
+    } else {
+      res.status(400).json({ message: "No Data" });
+    }
   } catch (error) {
     res.status(400).json({ message: "Internal Error" });
   }
@@ -93,7 +87,6 @@ let deleteEmployee = async (req, res) => {
 
 module.exports = {
   getEmployee,
-  getEmployeeById,
   postEmployee,
   putEmployee,
   deleteEmployee,

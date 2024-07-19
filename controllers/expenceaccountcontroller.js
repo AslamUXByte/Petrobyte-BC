@@ -20,16 +20,21 @@ let getExpenceAccountDetails = async (req, res) => {
       .limit(limit);
     let count = await ExpenceAccount.countDocuments({});
 
-    res.status(200).json({
-      message: {
-        count,
-        expenceDetails,
-        currentPage: page,
-        totalPages: Math.ceil(count / limit),
-      },
-    });
+    if(expenceDetails){
+
+      res.status(200).json({
+        message: {
+          count,
+          expenceDetails,
+          currentPage: page,
+          totalPages: Math.ceil(count / limit),
+        },
+      });
+    }else{
+      res.status(400).json({ message: "No Data" });
+    }
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Internal Error, Try Again" });
   }
 };
 
@@ -43,7 +48,7 @@ let getExpenceAccountDetailsByDate = async (req, res) => {
     }).populate("emp_id");
     res.status(200).json({ message: expenceDetails });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Internal Error, Try Again" });
   }
 };
 
@@ -55,7 +60,7 @@ let postExpenceAccountDetails = async (req, res) => {
     if(saveData) res.status(200).json({ message: "Added" });
     else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Internal Error, Try Again" });
   }
 };
 
@@ -82,7 +87,7 @@ let deleteExpenceAccountDetails = async (req, res) => {
     if(deleteData) res.status(200).json({ message: "Deleted" });
     else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Internal Error, Try Again" });
   }
 };
 

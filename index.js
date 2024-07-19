@@ -27,6 +27,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// PSQL
+// db.sequelize.sync()
+//   .then(() => {
+//     console.log('Database connected and synchronized');
+//   })
+//   .catch(err => {
+//     console.error('Error connecting to the database: ', err);
+//   });
+
 // MongoDB
 mongoose
   .connect(MONGO_URL)
@@ -48,15 +57,6 @@ app.use("/test", testRouter);
 app.use("/expenceaccount", expenceAccRouter);
 app.use("/cashManagement", cmRouter);
 app.use("/accountReport", accountReportRouter);
-
-// PSQL
-// db.sequelize.sync()
-//   .then(() => {
-//     console.log('Database connected and synchronized');
-//   })
-//   .catch(err => {
-//     console.error('Error connecting to the database: ', err);
-//   });
 
 // Start server
 app.listen(port, () => {

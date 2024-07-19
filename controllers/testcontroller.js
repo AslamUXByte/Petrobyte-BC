@@ -24,26 +24,21 @@ let getTest = async (req, res) => {
       .skip(startIndex)
       .limit(limit);
     let count = await Test.countDocuments({});
-    res.status(200).json({
-      message: {
-        count,
-        test,
-        currentPage: page,
-        totalPages: Math.ceil(count / limit),
-      },
-    });
-  } catch (error) {
-    res.json(error);
-  }
-};
+    if(test){
 
-let getTestById = async (req, res) => {
-  let test_id = req.query.id;
-  try {
-    let test = await Test.findOne({ _id: test_id });
-    res.status(200).json({ message: test });
+      res.status(200).json({
+        message: {
+          count,
+          test,
+          currentPage: page,
+          totalPages: Math.ceil(count / limit),
+        },
+      });
+    }else{
+      res.status(400).json({ message: "No Data" });
+    }
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Internal Error, Try Again" });
   }
 };
 
@@ -77,7 +72,7 @@ let postTest = async (req, res) => {
       res.status(200).json({ message: "Test Added" });
     } else res.status(400).json({ message: "Failed, Try Again" });
   } catch (error) {
-    res.status(400).json({ message: "Error, Try Again" });
+    res.status(400).json({ message: "Internal Error, Try Again" });
   }
 };
 
@@ -110,7 +105,6 @@ let deleteTest = async (req, res) => {
 
 module.exports = {
   getTest,
-  getTestById,
   postTest,
   deleteTest,
 };

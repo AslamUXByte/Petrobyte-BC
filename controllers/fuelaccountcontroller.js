@@ -21,16 +21,21 @@ let getFuelAccountDetails = async (req, res) => {
       .limit(limit);
     let count = await FuelAccount.countDocuments({});
 
-    res.status(200).json({
-      message: {
-        count,
-        fuelDetails,
-        currentPage: page,
-        totalPages: Math.ceil(count / limit),
-      },
-    });
+    if(fuelDetails){
+
+      res.status(200).json({
+        message: {
+          count,
+          fuelDetails,
+          currentPage: page,
+          totalPages: Math.ceil(count / limit),
+        },
+      });
+    }else{
+      res.status(400).json({ message: "No Data" });
+    }
   } catch (error) {
-    res.status(400).json({ message: "No Data" });
+    res.status(400).json({ message: "Internal Error" });
   }
 };
 
@@ -53,16 +58,21 @@ let getFuelAccountDetailsByDate = async (req, res) => {
 
     let count = await FuelAccount.countDocuments({});
 
-    res.status(200).json({
-      message: {
-        count,
-        fuelDetails,
-        currentPage: page,
-        totalPages: Math.ceil(count / limit),
-      },
-    });
+    if(fuelDetails){
+
+      res.status(200).json({
+        message: {
+          count,
+          fuelDetails,
+          currentPage: page,
+          totalPages: Math.ceil(count / limit),
+        },
+      });
+    }else{
+      res.status(400).json({ message: "No Data" });
+    }
   } catch (error) {
-    res.status(400).json({ message: "No Data" });
+    res.status(400).json({ message: "Internal Error" });
   }
 };
 

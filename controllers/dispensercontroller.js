@@ -62,7 +62,7 @@ let getAllDispencer = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(400).json({ message:"Internal Error" });
   }
 };
 
@@ -76,7 +76,7 @@ let getDispencers = async (req, res) => {
     });
     res.status(200).json({ message: dispencers });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message:"Internal Error" });
   }
 };
 
@@ -169,7 +169,7 @@ let putDispencer = async (req, res) => {
 
     res.status(200).json({ message: "Action Complete" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message:"Internal Error" });
   }
 };
 

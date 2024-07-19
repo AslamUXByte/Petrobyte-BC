@@ -30,16 +30,6 @@ let getProducts = async (req, res) => {
   }
 };
 
-let getProductsById = async (req, res) => {
-  let product_id = req.query.id;
-  try {
-    let product = await Products.findOne({ _id: product_id });
-    res.status(200).json({ message: product });
-  } catch (error) {
-    res.json(error);
-  }
-};
-
 let postProducts = async (req, res) => {
   let productData = req.body;
   try {
@@ -85,7 +75,6 @@ let deleteProducts = async (req, res) => {
 
 module.exports = {
   getProducts,
-  getProductsById,
   postProducts,
   putProducts,
   deleteProducts,

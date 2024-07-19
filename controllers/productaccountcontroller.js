@@ -18,16 +18,21 @@ let getProductAccountDetails = async (req, res) => {
       .limit(limit)
     let count = await ProductAccount.countDocuments({});
 
-    res.status(200).json({
-      message: {
-        count,
-        productAccount,
-        currentPage: page,
-        totalPages: Math.ceil(count / limit),
-      },
-    });
+    if(productAccount){
+
+      res.status(200).json({
+        message: {
+          count,
+          productAccount,
+          currentPage: page,
+          totalPages: Math.ceil(count / limit),
+        },
+      });
+    }else{
+      res.status(400).json({ message: "No Data" });
+    }
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Internal Error" });
   }
 };
 
@@ -37,9 +42,14 @@ let getProductAccountDetailsByDate = async (req, res) => {
     let productAccountDetails = await ProductAccount.find({
       date: date,
     }).populate("product_id");
-    res.status(200).json({ message: productAccountDetails });
+    if(productAccountDetails){
+
+      res.status(200).json({ message: productAccountDetails });
+    }else{
+      res.status(400).json({ message: "No Data" });
+    }
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Internal Error" });
   }
 };
 
@@ -51,7 +61,7 @@ let postProductAccountDetails = async (req, res) => {
     }
     res.status(200).json({ message: "Saved" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Internal Error" });
   }
 };
 
@@ -66,7 +76,7 @@ let putProductAccountDetails = async (req, res) => {
     if(putData) res.status(200).json({ message: "Details Updated" });
     else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Internal Error" });
   }
 };
 
@@ -76,9 +86,9 @@ let deleteProductAccountDetails = async (req, res) => {
   try {
     const deleteData = await ProductAccount.findOneAndDelete({ _id: id });
     if(deleteData) res.status(200).json({ message: "Removed" });
-    else res.status(200).json({ message: "Action Failed, Try Again" });
+    else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Internal Error" });
   }
 };
 

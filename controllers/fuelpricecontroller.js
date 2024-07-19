@@ -3,19 +3,13 @@ const Fuels = require("../models/fuel");
 let getFuels = async (req, res) => {
   try {
     let fuelDetails = await Fuels.find();
-    res.status(200).json({ message: fuelDetails });
+    if (fuelDetails) {
+      res.status(200).json({ message: fuelDetails });
+    } else {
+      res.status(400).json({ message: "No Data" });
+    }
   } catch (error) {
-    res.json(error);
-  }
-};
-
-let getFuelsById = async (req, res) => {
-  let fuelId = req.query.id;
-  try {
-    let fuelDetails = await Fuels.findOne({ _id: fuelId });
-    res.status(200).json({ message: fuelDetails });
-  } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "No Data" });
   }
 };
 
@@ -23,10 +17,10 @@ let postFuels = async (req, res) => {
   let fuelsData = req.body;
   try {
     let fuels = await Fuels.create(fuelsData);
-    if(fuels) res.status(200).json({ message: "Inserted" });
+    if (fuels) res.status(200).json({ message: "Inserted" });
     else res.status(400).json({ message: "Failed" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Internal Error" });
   }
 };
 
@@ -35,28 +29,28 @@ let putFuels = async (req, res) => {
   try {
     const updateData = await Fuels.findOneAndUpdate(
       { _id: fuelsData._id },
-      { fuel_price: fuelsData.fuel_price,
-        fuel_previous_price: fuelsData.fuel_previous_price
-       },
+      {
+        fuel_price: fuelsData.fuel_price,
+        fuel_previous_price: fuelsData.fuel_previous_price,
+      },
       { new: true }
     );
-    if(updateData) res.status(200).json({ message: "Fuel Price Updated" });
+    if (updateData) res.status(200).json({ message: "Fuel Price Updated" });
     else res.status(400).json({ message: "Fuel Price Updated" });
   } catch (error) {
-    res.json(error);
+    res.status(400).json({ message: "Internal Error" });
   }
 };
 
 let deleteFuels = async (req, res) => {
-  
   try {
     let fuelId = req.query.id;
     const deleteFuel = await Fuels.findOneAndDelete({ _id: fuelId });
-    if(deleteFuel) res.status(200).json({ message: "Fuel Removed" });
+    if (deleteFuel) res.status(200).json({ message: "Fuel Removed" });
     else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
     res.status(400).json({ message: "Action Failed, Try Again" });
   }
 };
 
-module.exports = { getFuels, getFuelsById, postFuels, putFuels, deleteFuels };
+module.exports = { getFuels, postFuels, putFuels, deleteFuels };
