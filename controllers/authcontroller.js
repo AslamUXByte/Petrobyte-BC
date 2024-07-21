@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const Signup = async (req, res) => {
   let userData = req.body;
@@ -20,22 +20,25 @@ const Signup = async (req, res) => {
 
 const Signin = async (req, res) => {
   const { email, password } = req.body;
-  const JWT_SECRET = 'PETROBYTES';
+  const JWT_SECRET = "PETROBYTES";
 
   const user = await User.findOne({ email });
 
   if (!user) {
-    return res.status(400).json({message:'Invalid username or password'});
+    return res.status(400).json({ message: "Invalid username or password" });
   }
 
   // const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (user.password !== password) {
+    return res.status(400).json({ message: "Invalid username or password" });
+  }
 
   // if (!isPasswordValid) {
   //   return res.status(400).json({message:'Invalid username or password'});
   // }
 
-  const token = jwt.sign({ user: user }, JWT_SECRET, { expiresIn: '1h' });
-  res.status(200).json({ message:token });
+  const token = jwt.sign({ user: user }, JWT_SECRET, { expiresIn: "1h" });
+  res.status(200).json({ message: token });
 };
 
 module.exports = { Signup, Signin };
