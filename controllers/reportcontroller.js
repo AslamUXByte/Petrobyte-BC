@@ -126,10 +126,10 @@ const getAccounts = async (req, res) => {
 
   res.status(200).json({
     message: {
-      count: account.length,
+      // count: account.length,
       account,
-      currentPage: page,
-      totalPages: Math.ceil(account.length / limit),
+      // currentPage: page,
+      // totalPages: Math.ceil(account.length / limit),
     },
   });
 };
