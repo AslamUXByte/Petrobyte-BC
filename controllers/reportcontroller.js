@@ -5,31 +5,33 @@ const CreditHistory = require("../models/credithistory");
 const CM = require("../models/cashmanagement");
 
 const getAccounts = async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
+  // const page = parseInt(req.query.page) || 1;
+  // const limit = parseInt(req.query.limit) || 10;
 
-  const startIndex = (page - 1) * limit;
+  // const startIndex = (page - 1) * limit;
 
-  let date = req.query.date;
+  // let date = req.query.date;
   let query = {};
 
-  if (date) {
-    query.date = { $regex: date, $options: "i" };
-  }
+  // if (date) {
+  //   query.date = { $regex: date, $options: "i" };
+  // }
 
-  let fuelAccounts = await FuelAccount.find(query)
-    .skip(startIndex)
-    .limit(limit);
-  let productAccounts = await ProductAccount.find(query)
-    .skip(startIndex)
-    .limit(limit);
-  let expenceAccounts = await ExpenceAccount.find(query)
-    .skip(startIndex)
-    .limit(limit);
-  let creditAccounts = await CreditHistory.find(query)
-    .skip(startIndex)
-    .limit(limit);
-  let cms = await CM.find(query).skip(startIndex).limit(limit);
+  let fuelAccounts = await FuelAccount.find(query);
+  // .skip(startIndex)
+  // .limit(limit);
+  let productAccounts = await ProductAccount.find(query);
+  // .skip(startIndex)
+  // .limit(limit);
+  let expenceAccounts = await ExpenceAccount.find(query);
+  // .skip(startIndex)
+  // .limit(limit);
+  let creditAccounts = await CreditHistory.find(query);
+  // .skip(startIndex)
+  // .limit(limit);
+  let cms = await CM.find(query);
+  // .skip(startIndex)
+  // .limit(limit);
 
   const fuelAcc = Object.values(
     fuelAccounts.reduce((acc, { date, amount }) => {
@@ -272,9 +274,9 @@ const getAccountsReport = async (req, res) => {
       fuelAmountToReport,
       productAmountToReport,
       expenceAmountToReport,
-      account
+      account,
     },
   });
 };
 
-module.exports = { getAccounts,getAccountsReport };
+module.exports = { getAccounts, getAccountsReport };
