@@ -80,17 +80,16 @@ let deleteTest = async (req, res) => {
   
   try {
     let testData = req.body;
-    const result = await Test.findOneAndDelete({ _id: test_id });
+    const result = await Test.findOneAndDelete({ _id: testData._id });
 
     if (result) {
       let dispencerId = await Dispencer.findOne({
-        dispencer_name: testData.dispencer_name,
-        sub_dispencer_id: testData.sub_dispencer_id,
+        _id: testData.dispencer_id._id,
       });
 
       let newReading =
         parseFloat(dispencerId.live_reading) -
-        parseFloat(testData.live_reading);
+        parseFloat(testData.dispencer_id.live_reading);
 
       let updateReading = await Dispencer.findOneAndUpdate(
         { _id: dispencerId._id },
