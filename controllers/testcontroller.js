@@ -24,8 +24,7 @@ let getTest = async (req, res) => {
       .skip(startIndex)
       .limit(limit);
     let count = await Test.countDocuments({});
-    if(test){
-
+    if (test) {
       res.status(200).json({
         message: {
           count,
@@ -34,7 +33,7 @@ let getTest = async (req, res) => {
           totalPages: Math.ceil(count / limit),
         },
       });
-    }else{
+    } else {
       res.status(400).json({ message: "No Data" });
     }
   } catch (error) {
@@ -47,6 +46,7 @@ let postTest = async (req, res) => {
     let testData = req.body;
     let dispencerName = testData.dispencer_name;
     let subDispencerId = testData.sub_dispencer_id;
+
     let dispencerId = await Dispencer.findOne({
       dispencer_name: dispencerName,
       sub_dispencer_id: subDispencerId,
@@ -58,41 +58,53 @@ let postTest = async (req, res) => {
       fuel_quantity: testData.fuel_quantity,
     };
 
-    let newLiveReading =
-      parseFloat(dispencerId.live_reading) + parseFloat(testData.fuel_quantity);
+    let checkExistingData = await Test.findOne({
+      date: testData.date,
+      dispencer_id: dispencerId._id,
+    });
 
-    let saveData = await Test.create(testDataToSave);
+    if (checkExistingData) {
+      return res.status(400).json({ message: "Test Alredy Added" });
+    } else {
+      let newLiveReading =
+        parseFloat(dispencerId.live_reading) +
+        parseFloat(testData.fuel_quantity);
 
-    if (saveData) {
-      let updateLiveReading = await Dispencer.findOneAndUpdate(
-        { _id: dispencerId._id },
-        { live_reading: newLiveReading },
-        { new: true }
-      );
-      res.status(200).json({ message: "Test Added" });
-    } else res.status(400).json({ message: "Failed, Try Again" });
+      let saveData = await Test.create(testDataToSave);
+
+      if (saveData) {
+        let updateLiveReading = await Dispencer.findOneAndUpdate(
+          { _id: dispencerId._id },
+          { live_reading: newLiveReading },
+          { new: true }
+        );
+        res.status(200).json({ message: "Test Added" });
+      } else{ res.status(400).json({ message: "Failed, Try Again" })};
+    }
   } catch (error) {
     res.status(400).json({ message: "Internal Error, Try Again" });
   }
 };
 
 let deleteTest = async (req, res) => {
-  
   try {
     let testData = req.body;
     const result = await Test.findOneAndDelete({ _id: testData._id });
 
     if (result) {
-      let dispencerId = await Dispencer.findOne({
+      let updateDispencerData = await Dispencer.findOne({
         _id: testData.dispencer_id._id,
       });
 
       let newReading =
-        parseFloat(dispencerId.live_reading) -
-        parseFloat(testData.dispencer_id.live_reading);
+        parseFloat(updateDispencerData.live_reading) -
+        parseFloat(testData.fuel_quantity);
+
+        console.log(updateDispencerData)
+        console.log(newReading)
 
       let updateReading = await Dispencer.findOneAndUpdate(
-        { _id: dispencerId._id },
+        { _id: updateDispencerData._id },
         { live_reading: newReading }
       );
       if (updateReading) res.status(200).json({ message: "Test Removed" });
