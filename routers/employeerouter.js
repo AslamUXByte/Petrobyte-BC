@@ -1,5 +1,6 @@
 const express = require("express");
 const { getEmployee, postEmployee, putEmployee, deleteEmployee } = require("../controllers/employeecontroller");
+// const { authenticateToken } = require("../middleware/token");
 const router = express.Router();
 
 router.get("/GETAllEmployee", getEmployee);

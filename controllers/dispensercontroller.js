@@ -62,7 +62,7 @@ let getAllDispencer = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(400).json({ message:"Internal Error" });
+    res.status(400).json({ message: "Internal Error" });
   }
 };
 
@@ -76,17 +76,24 @@ let getDispencers = async (req, res) => {
     });
     res.status(200).json({ message: dispencers });
   } catch (error) {
-    res.status(400).json({ message:"Internal Error" });
+    res.status(400).json({ message: "Internal Error" });
   }
 };
 
 let postDispencer = async (req, res) => {
   try {
     let dispencerData = req.body;
-    for (let dispencer of dispencerData) {
-      let insertDispencer = await Dispencer.create(dispencer);
+    let checkDispencerNameExist = await Dispencer.find({
+      dispencer_name: dispencerData[0].dispencer_name,
+    });
+    if (checkDispencerNameExist) {
+      res.status(400).json({ message: "Dispencer Name Alredy Exist" });
+    } else {
+      for (let dispencer of dispencerData) {
+        let insertDispencer = await Dispencer.create(dispencer);
+      }
+      res.status(200).json({ message: "Dispencer Added Successfully" });
     }
-    res.status(200).json({ message: "Dispencer Added Successfully" });
   } catch (error) {
     res.status(400).json({ message: "Something Went Wrong, Try Again" });
   }
@@ -95,81 +102,97 @@ let postDispencer = async (req, res) => {
 let putDispencer = async (req, res) => {
   try {
     let dispencerData = req.body;
-
-    let dispencer = await Dispencer.find({
-      _id: dispencerData[0].id,
-    });
-    let dispencerName = await Dispencer.find({
-      dispencer_name: dispencer[0].dispencer_name,
-    });
-    const toInsert = [];
-    const toDelete = [];
-    const toUpdate = [];
-
-    // Create a set of sub_dispencer_ids from the dbArray for quick lookup
-    const dbSubDispencerIds = new Set(
-      dispencerName.map((item) => item.sub_dispencer_id.toString())
-    );
-    console.log(dbSubDispencerIds);
-    // Create a set of sub_dispencer_ids from the inputBody for quick lookup
-    const inputSubDispencerIds = new Set(
-      dispencerData.map((item) => item.sub_dispencer_id)
-    );
-    console.log(inputSubDispencerIds);
-    // Find items to insert
-    dispencerData.forEach((item) => {
-      if (!dbSubDispencerIds.has(item.sub_dispencer_id)) {
-        toInsert.push(item);
-      }
+    let checkDispencerNameExist = await Dispencer.find({
+      $or: [
+        { _id: { $ne: dispencerData[0].id } },
+        { dispencer_name: { $ne: dispencerData[0].dispencer_name } },
+      ],
     });
 
-    // Find items to delete
-    dispencerName.forEach((item) => {
-      if (!inputSubDispencerIds.has(item.sub_dispencer_id.toString())) {
-        toDelete.push(item);
-      }
-    });
-
-    // Find items to update
-    dispencerData.forEach((inputItem) => {
-      dispencerName.forEach((dbItem) => {
-        if (inputItem.sub_dispencer_id === dbItem.sub_dispencer_id.toString()) {
-          toUpdate.push({
-            _id: dbItem._id,
-            dispencer_name: inputItem.dispencer_name,
-            live_reading: inputItem.live_reading,
-          });
-        }
+    if (checkDispencerNameExist) {
+      res
+        .status(400)
+        .json({
+          message: "This Dispencer Name Alredy Exist, Try Another Name",
+        });
+    } else {
+      let dispencer = await Dispencer.find({
+        _id: dispencerData[0].id,
       });
-    });
-
-    for (let item of toInsert) {
-      await Dispencer.create(item);
-    }
-
-    for (let item of toDelete) {
-      await Dispencer.deleteOne({
-        _id: item._id,
+      let dispencerName = await Dispencer.find({
+        dispencer_name: dispencer[0].dispencer_name,
       });
-    }
+      const toInsert = [];
+      const toDelete = [];
+      const toUpdate = [];
 
-    for (let item of toUpdate) {
-      await Dispencer.findOneAndUpdate(
-        { _id: item._id },
-        {
-          dispencer_name: item.dispencer_name,
-          sub_dispencer_id: item.sub_dispencer_id,
-          live_reading: item.live_reading,
-        },
-        {
-          new: true,
-        }
+      // Create a set of sub_dispencer_ids from the dbArray for quick lookup
+      const dbSubDispencerIds = new Set(
+        dispencerName.map((item) => item.sub_dispencer_id.toString())
       );
-    }
+      console.log(dbSubDispencerIds);
+      // Create a set of sub_dispencer_ids from the inputBody for quick lookup
+      const inputSubDispencerIds = new Set(
+        dispencerData.map((item) => item.sub_dispencer_id)
+      );
+      console.log(inputSubDispencerIds);
+      // Find items to insert
+      dispencerData.forEach((item) => {
+        if (!dbSubDispencerIds.has(item.sub_dispencer_id)) {
+          toInsert.push(item);
+        }
+      });
 
-    res.status(200).json({ message: "Action Complete" });
+      // Find items to delete
+      dispencerName.forEach((item) => {
+        if (!inputSubDispencerIds.has(item.sub_dispencer_id.toString())) {
+          toDelete.push(item);
+        }
+      });
+
+      // Find items to update
+      dispencerData.forEach((inputItem) => {
+        dispencerName.forEach((dbItem) => {
+          if (
+            inputItem.sub_dispencer_id === dbItem.sub_dispencer_id.toString()
+          ) {
+            toUpdate.push({
+              _id: dbItem._id,
+              dispencer_name: inputItem.dispencer_name,
+              live_reading: inputItem.live_reading,
+            });
+          }
+        });
+      });
+
+      for (let item of toInsert) {
+        await Dispencer.create(item);
+      }
+
+      for (let item of toDelete) {
+        await Dispencer.deleteOne({
+          _id: item._id,
+        });
+      }
+
+      for (let item of toUpdate) {
+        await Dispencer.findOneAndUpdate(
+          { _id: item._id },
+          {
+            dispencer_name: item.dispencer_name,
+            sub_dispencer_id: item.sub_dispencer_id,
+            live_reading: item.live_reading,
+          },
+          {
+            new: true,
+          }
+        );
+      }
+
+      res.status(200).json({ message: "Successfully Updated" });
+    }
   } catch (error) {
-    res.status(400).json({ message:"Internal Error" });
+    res.status(400).json({ message: "Internal Error" });
   }
 };
 
@@ -212,11 +235,11 @@ let getSubDispencer = async (req, res) => {
     let dispencersFromDb = await Dispencer.find({
       dispencer_name: name,
     }).populate({
-        path: "sub_dispencer_id",
-        populate: {
-          path: "fuel_id",
-        },
-      });
+      path: "sub_dispencer_id",
+      populate: {
+        path: "fuel_id",
+      },
+    });
 
     res.status(200).json({ message: dispencersFromDb });
   } catch (error) {

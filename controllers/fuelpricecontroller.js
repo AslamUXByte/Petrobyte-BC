@@ -1,6 +1,8 @@
+const moment = require("moment");
 const Fuels = require("../models/fuel");
+const FuelsPriceHistory = require("../models/fuelpricehistory");
 
-let getFuels = async (req, res) => {
+const getFuels = async (req, res) => {
   try {
     let fuelDetails = await Fuels.find();
     if (fuelDetails) {
@@ -13,7 +15,7 @@ let getFuels = async (req, res) => {
   }
 };
 
-let postFuels = async (req, res) => {
+const postFuels = async (req, res) => {
   let fuelsData = req.body;
   try {
     let fuels = await Fuels.create(fuelsData);
@@ -24,7 +26,7 @@ let postFuels = async (req, res) => {
   }
 };
 
-let putFuels = async (req, res) => {
+const putFuels = async (req, res) => {
   let fuelsData = req.body;
   try {
     const updateData = await Fuels.findOneAndUpdate(
@@ -42,7 +44,7 @@ let putFuels = async (req, res) => {
   }
 };
 
-let deleteFuels = async (req, res) => {
+const deleteFuels = async (req, res) => {
   try {
     let fuelId = req.query.id;
     const deleteFuel = await Fuels.findOneAndDelete({ _id: fuelId });
@@ -53,4 +55,41 @@ let deleteFuels = async (req, res) => {
   }
 };
 
-module.exports = { getFuels, postFuels, putFuels, deleteFuels };
+const postfuelPriceHistoryByDate = async () => {
+  try {
+    let fuelPrice = await Fuels.find();
+    const todayDate = moment().format("DD/MM/YYYY");
+
+    let fuelsData = {
+      date: todayDate,
+      fuel_petrol_price: fuelPrice[1].fuel_price,
+      fuel_diesel_price: fuelPrice[0].fuel_price,
+      fuel_other_price: 0,
+    };
+
+    let fuels = await FuelsPriceHistory.create(fuelsData);
+  } catch (error) {}
+};
+
+const getfuelPriceHistoryByDate = async (req, res) => {
+  try {
+    const date = req.query.date;
+    let fuelDetails = await FuelsPriceHistory.find({ date: date });
+    if (fuelDetails) {
+      res.status(200).json({ message: fuelDetails });
+    } else {
+      res.status(400).json({ message: "No Data" });
+    }
+  } catch (error) {
+    res.status(400).json({ message: "No Data" });
+  }
+};
+
+module.exports = {
+  getFuels,
+  postFuels,
+  putFuels,
+  deleteFuels,
+  postfuelPriceHistoryByDate,
+  getfuelPriceHistoryByDate,
+};

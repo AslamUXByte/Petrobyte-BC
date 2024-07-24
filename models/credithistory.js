@@ -13,15 +13,6 @@ const ccHistorySchema = new mongoose.Schema({
   fuel_type: {
     type: String,
   },
-  fuel_petrol_price: {
-    type: Number,
-  },
-  fuel_diesel_price: {
-    type: Number,
-  },
-  fuel_other_price: {
-    type: Number,
-  },
   fuel_quantity: {
     type: String,
   },

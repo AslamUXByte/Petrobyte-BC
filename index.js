@@ -2,6 +2,7 @@ const express = require("express");
 // const db = require('./models');
 const mongoose = require("mongoose");
 const cors = require("cors");
+const cron = require('node-cron');
 
 const userRouter = require("./routers/userrouter");
 const authRouter = require("./routers/authrouter");
@@ -18,6 +19,7 @@ const testRouter = require("./routers/testrouter");
 const expenceAccRouter = require("./routers/expenceaccountrouter");
 const cmRouter = require("./routers/cashmanagementrouter");
 const accountReportRouter = require("./routers/reportrouter");
+const { postfuelPriceHistoryByDate } = require("./controllers/fuelpricecontroller");
 
 const port = process.env.PORT || 8000;
 // const MONGO_URL=`mongodb+srv://petro-main-db-06f20494b77:HNz3517CNn3pYv751y2714ASRfqVdw@prod-us-central1-1.lfuy1.mongodb.net/petro-main-db-06f20494b77`
@@ -57,6 +59,10 @@ app.use("/test", testRouter);
 app.use("/expenceaccount", expenceAccRouter);
 app.use("/cashManagement", cmRouter);
 app.use("/accountReport", accountReportRouter);
+
+cron.schedule('50 23 * * *', postfuelPriceHistoryByDate, {
+  timezone: "Asia/Kolkata"
+});
 
 // Start server
 app.listen(port, () => {
