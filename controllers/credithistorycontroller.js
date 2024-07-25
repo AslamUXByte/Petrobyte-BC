@@ -1,4 +1,5 @@
 const CreditHistory = require("../models/credithistory");
+const CreditCustomer = require("../models/creditcustomer");
 
 let getCreditHistory = async (req, res) => {
   try {
@@ -78,15 +79,39 @@ let putCreditHistory = async (req, res) => {
 };
 
 let deleteCreditHistory = async (req, res) => {
-  let id = req.query.id;
-
   try {
+    let id = req.query.id;
+
+    let creditHistory = await CreditHistory.find({ _id: id });
+    let creditAmount = await CreditCustomer.find({ _id: creditHistory.cc_id });
+
+    let newCreditAmount = creditHistory.credit_amount;
+    if (creditHistory.amount_type == "Credit") {
+      newCreditAmount =
+        parseFloat(creditAmount.credit_amount) -
+        parseFloat(creditHistory.amount);
+    }
+    if (creditHistory.amount_type == "Debit") {
+      newCreditAmount =
+        parseFloat(creditAmount.credit_amount) +
+        parseFloat(creditHistory.amount);
+    }
+
     const deleteCreditHistory = await CreditHistory.findOneAndDelete({
       _id: id,
     });
-    if (deleteCreditHistory)
+
+    if (deleteCreditHistory) {
+      const putCC = await CreditCustomer.findOneAndUpdate(
+        { _id: creditAmount._id },
+        { credit_amount: newCreditAmount },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
       res.status(200).json({ message: "CreditHistory Removed" });
-    else res.status(400).json({ message: "Action Failed, Try Again" });
+    } else res.status(400).json({ message: "Action Failed, Try Again" });
   } catch (error) {
     res.status(400).json({ message: "Something Went Wrong, Please try again" });
   }

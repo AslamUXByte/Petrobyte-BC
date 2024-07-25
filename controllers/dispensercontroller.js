@@ -86,7 +86,8 @@ let postDispencer = async (req, res) => {
     let checkDispencerNameExist = await Dispencer.find({
       dispencer_name: dispencerData[0].dispencer_name,
     });
-    if (checkDispencerNameExist) {
+
+    if (checkDispencerNameExist.length!==0) {
       res.status(400).json({ message: "Dispencer Name Alredy Exist" });
     } else {
       for (let dispencer of dispencerData) {
@@ -103,13 +104,10 @@ let putDispencer = async (req, res) => {
   try {
     let dispencerData = req.body;
     let checkDispencerNameExist = await Dispencer.find({
-      $or: [
-        { _id: { $ne: dispencerData[0].id } },
-        { dispencer_name: { $ne: dispencerData[0].dispencer_name } },
-      ],
+      dispencer_name: dispencerData[0].dispencer_name,
     });
 
-    if (checkDispencerNameExist) {
+    if (checkDispencerNameExist.length!==0) {
       res
         .status(400)
         .json({
