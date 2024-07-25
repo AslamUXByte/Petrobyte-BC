@@ -102,7 +102,7 @@ let deleteCreditHistory = async (req, res) => {
 
     if (deleteCreditHistory) {
       const putCC = await CreditCustomer.findOneAndUpdate(
-        { _id: creditAmount._id },
+        { _id: creditAmount[0]._id },
         { credit_amount: newCreditAmount },
         {
           new: true,
