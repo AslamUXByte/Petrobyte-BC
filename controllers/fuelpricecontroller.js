@@ -68,7 +68,14 @@ const postfuelPriceHistoryByDate = async () => {
     };
 
     let fuels = await FuelsPriceHistory.create(fuelsData);
-  } catch (error) {}
+    if(fuels){
+      res.status(200).json({ message: "Price History Added" });
+    }else{
+      res.status(400).json({ message: "Error" });
+    }
+  } catch (error) {
+    res.status(400).json({ message: "Internal Error" });
+  }
 };
 
 const getfuelPriceHistoryByDate = async (req, res) => {
