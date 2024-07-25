@@ -83,23 +83,22 @@ let deleteCreditHistory = async (req, res) => {
     let id = req.query.id;
 
     let creditHistory = await CreditHistory.find({ _id: id });
-    let creditAmount = await CreditCustomer.find({ _id: creditHistory.cc_id });
+    let creditAmount = await CreditCustomer.find({ _id: creditHistory[0].cc_id });
 
-    let newCreditAmount = creditHistory.credit_amount;
-    if (creditHistory.amount_type == "Credit") {
+    let newCreditAmount = creditHistory[0].credit_amount;
+    if (creditHistory[0].amount_type == "Credit") {
       newCreditAmount =
-        parseFloat(creditAmount.credit_amount) -
-        parseFloat(creditHistory.amount);
+        parseFloat(creditAmount[0].credit_amount) -
+        parseFloat(creditHistory[0].amount);
     }
-    if (creditHistory.amount_type == "Debit") {
+    if (creditHistory[0].amount_type == "Debit") {
       newCreditAmount =
-        parseFloat(creditAmount.credit_amount) +
-        parseFloat(creditHistory.amount);
+        parseFloat(creditAmount[0].credit_amount) +
+        parseFloat(creditHistory[0].amount);
     }
+    console.log(newCreditAmount)
 
-    const deleteCreditHistory = await CreditHistory.findOneAndDelete({
-      _id: id,
-    });
+    const deleteCreditHistory = await CreditHistory.findOneAndDelete({ _id: id });
 
     if (deleteCreditHistory) {
       const putCC = await CreditCustomer.findOneAndUpdate(
