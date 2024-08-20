@@ -4,6 +4,16 @@ const fuelAccSchema = new mongoose.Schema({
   date: {
     type: String,
   },
+  employee_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Employee",
+  },
+  from_time: {
+    type: String,
+  },
+  to_time: {
+    type: String,
+  },
   dispencer_name: {
     type: String,
   },
