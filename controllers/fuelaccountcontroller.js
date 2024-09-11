@@ -21,8 +21,7 @@ let getFuelAccountDetails = async (req, res) => {
       .limit(limit);
     let count = await FuelAccount.countDocuments({});
 
-    if(fuelDetails){
-
+    if (fuelDetails) {
       res.status(200).json({
         message: {
           count,
@@ -31,7 +30,7 @@ let getFuelAccountDetails = async (req, res) => {
           totalPages: Math.ceil(count / limit),
         },
       });
-    }else{
+    } else {
       res.status(400).json({ message: "No Data" });
     }
   } catch (error) {
@@ -58,8 +57,7 @@ let getFuelAccountDetailsByDate = async (req, res) => {
 
     let count = await FuelAccount.countDocuments({});
 
-    if(fuelDetails){
-
+    if (fuelDetails) {
       res.status(200).json({
         message: {
           count,
@@ -68,7 +66,7 @@ let getFuelAccountDetailsByDate = async (req, res) => {
           totalPages: Math.ceil(count / limit),
         },
       });
-    }else{
+    } else {
       res.status(400).json({ message: "No Data" });
     }
   } catch (error) {
@@ -182,6 +180,25 @@ const getFuelAccountOverview = async (req, res) => {
   }
 };
 
+const getFuelAccountByStaff = async (req, res) => {
+  try {
+    const date = req.query.date;
+    const name = req.query.name;
+    const query = {};
+
+    if (date) {
+      query.date = { $regex: date, $options: "i" };
+      query.name = { $regex: name, $options: "i" };
+    }
+
+    const fuelDetails = await FuelAccount.find(query);
+
+    res.status(200).json({ message: fuelDetails });
+  } catch (error) {
+    res.status(400).json({ message: "No Data" });
+  }
+};
+
 module.exports = {
   getFuelAccountDetails,
   getFuelAccountDetailsByDate,
@@ -189,4 +206,5 @@ module.exports = {
   putFuelAccountDetails,
   deleteFuelAccountDetails,
   getFuelAccountOverview,
+  getFuelAccountByStaff,
 };
