@@ -4,6 +4,10 @@ const cashManagementSchema = new mongoose.Schema({
   date: {
     type: String,
   },
+  employee_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Employee",
+  },
   total_amount: {
     type: Number,
   },
@@ -14,6 +18,9 @@ const cashManagementSchema = new mongoose.Schema({
     type: Number,
   },
   cash_other: {
+    type: Number,
+  },
+  credit_amount: {
     type: Number,
   },
   status: {

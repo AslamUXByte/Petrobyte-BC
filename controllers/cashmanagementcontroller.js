@@ -11,6 +11,17 @@ const getCashByDate = async (req, res) => {
   }
 };
 
+const getCashByEmployee = async (req, res) => {
+  try {
+    let name = req.query.name;
+    let cashDetails = await CM.find({ employee_id: id });
+    if (cashDetails) res.status(200).json({ message: cashDetails });
+    else res.status(400).json({ message: "No Data" });
+  } catch (error) {
+    res.status(400).json({ message: "Internal Error" });
+  }
+};
+
 const postCash = async (req, res) => {
   let cashDetails = req.body;
   try {
@@ -34,4 +45,4 @@ const putCash = async (req, res) => {
   }
 };
 
-module.exports = { getCashByDate, postCash, putCash };
+module.exports = { getCashByDate, postCash, putCash,getCashByEmployee };

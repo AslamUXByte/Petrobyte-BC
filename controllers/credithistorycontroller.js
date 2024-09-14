@@ -1,7 +1,7 @@
 const CreditHistory = require("../models/credithistory");
 const CreditCustomer = require("../models/creditcustomer");
 
-let getCreditHistory = async (req, res) => {
+const getCreditHistory = async (req, res) => {
   try {
     const ccId = req.query.id;
     const page = parseInt(req.query.page) || 1;
@@ -45,7 +45,28 @@ let getCreditHistory = async (req, res) => {
   }
 };
 
-let postCreditHistory = async (req, res) => {
+const getVehicleNumber = async (req, res) => {
+  try {
+    const number = req.query.number;
+    const query = {};
+
+    if (number) {
+      query.vehicle_no = { $regex: number, $options: "i" };
+    }
+
+    const vechicleNumber = await CreditHistory.find(query, {
+      projection: { vehicle_no: 1, _id: 0 },
+    }).toArray();
+
+    if (vechicleNumber) {
+      res.status(200).json({ message: vechicleNumber });
+    }
+  } catch (error) {
+    res.status(400).json({ message: "Something Went Wrong, Please try again" });
+  }
+};
+
+const postCreditHistory = async (req, res) => {
   try {
     let creditData = req.body;
 
@@ -57,7 +78,7 @@ let postCreditHistory = async (req, res) => {
   }
 };
 
-let putCreditHistory = async (req, res) => {
+const putCreditHistory = async (req, res) => {
   try {
     let creditData = req.body;
     let id = creditData.id;
@@ -78,12 +99,14 @@ let putCreditHistory = async (req, res) => {
   }
 };
 
-let deleteCreditHistory = async (req, res) => {
+const deleteCreditHistory = async (req, res) => {
   try {
     let id = req.query.id;
 
     let creditHistory = await CreditHistory.find({ _id: id });
-    let creditAmount = await CreditCustomer.find({ _id: creditHistory[0].cc_id });
+    let creditAmount = await CreditCustomer.find({
+      _id: creditHistory[0].cc_id,
+    });
 
     let newCreditAmount = creditHistory[0].credit_amount;
     if (creditHistory[0].amount_type == "Credit") {
@@ -96,9 +119,11 @@ let deleteCreditHistory = async (req, res) => {
         parseFloat(creditAmount[0].credit_amount) +
         parseFloat(creditHistory[0].amount);
     }
-    console.log(newCreditAmount)
+    console.log(newCreditAmount);
 
-    const deleteCreditHistory = await CreditHistory.findOneAndDelete({ _id: id });
+    const deleteCreditHistory = await CreditHistory.findOneAndDelete({
+      _id: id,
+    });
 
     if (deleteCreditHistory) {
       const putCC = await CreditCustomer.findOneAndUpdate(
@@ -121,4 +146,5 @@ module.exports = {
   postCreditHistory,
   putCreditHistory,
   deleteCreditHistory,
+  getVehicleNumber
 };
