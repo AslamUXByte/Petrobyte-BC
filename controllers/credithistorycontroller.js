@@ -55,8 +55,9 @@ const getVehicleNumber = async (req, res) => {
     }
 
     const vechicleNumber = await CreditHistory.find(query, {
-      projection: { vehicle_no: 1, _id: 0 },
-    }).toArray();
+      vehicle_no: 1,
+      _id: 0,
+    });
 
     if (vechicleNumber) {
       res.status(200).json({ message: vechicleNumber });
@@ -146,5 +147,5 @@ module.exports = {
   postCreditHistory,
   putCreditHistory,
   deleteCreditHistory,
-  getVehicleNumber
+  getVehicleNumber,
 };

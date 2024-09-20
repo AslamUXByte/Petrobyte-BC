@@ -13,6 +13,6 @@ router.post("/POSTCreditHistory", postCreditHistory);
 router.put("/PUTCreditHistory", putCreditHistory);
 router.delete("/DELETECreditHistory", deleteCreditHistory);
 router.delete("/DELETECreditHistory", deleteCreditHistory);
-router.get("/GETvehicleNumebr", getVehicleNumber);
+router.get("/GETvehicleNumber", getVehicleNumber);
 
 module.exports = router;

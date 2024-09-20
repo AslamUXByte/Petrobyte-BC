@@ -33,6 +33,18 @@ const fuelAccSchema = new mongoose.Schema({
   amount: {
     type: Number,
   },
+  cash_inhand: {
+    type: Number,
+  },
+  cash_bank: {
+    type: Number,
+  },
+  cash_other: {
+    type: Number,
+  },
+  cash_credit: {
+    type: Number,
+  },
   fuel_price_selected: {
     type: Number,
   },
