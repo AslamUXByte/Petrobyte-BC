@@ -75,7 +75,7 @@ const getAccounts = async (req, res) => {
     }, {})
   );
 
-  const cmAcc = cms.map((item) => ({
+  const cmAcc = fuelAccounts.map((item) => ({
     date: item.date,
     total_cash_inhand: item.cash_inhand,
     total_cash_bank: item.cash_bank,
